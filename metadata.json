@@ -1,0 +1,15 @@
+{
+  "name": "skynetsolutions-winlogbeat",
+  "version": "0.1.0",
+  "author": "skynetsolutions",
+  "summary": "A module to install and manage the winlogbeat log shipper",
+  "license": "Apache-2.0",
+  "source": "https://github.com/skynetsolutions/puppet-winlogbeat",
+  "project_page": "https://github.com/skynetsolutions/puppet-winlogbeat",
+  "issues_url": "https://github.com/skynetsolutions/puppet-winlogbeat/issues",
+  "dependencies": [
+    {"name":"puppetlabs-stdlib","version_requirement":">= 1.0.0"}
+  ],
+  "data_provider": null
+}
+
