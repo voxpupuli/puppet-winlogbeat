@@ -2,8 +2,10 @@ class winlogbeat::install {
   $filename = regsubst($winlogbeat::download_url, '^https.*\/([^\/]+)\.[^.].*', '\1')
   $foldername = 'winlogbeat'
 
-  file { $winlogbeat::install_dir:
-    ensure => directory
+  if ! defined(File[$winlogbeat::install_dir]) {
+    file { $winlogbeat::install_dir:
+      ensure => directory
+    }
   }
 
   remote_file {"${winlogbeat::tmp_dir}/${filename}.zip":
@@ -22,7 +24,7 @@ class winlogbeat::install {
     ],
   }
 
-  exec { 'rename folder':
+  exec { 'rename winlogbeat folder':
     command  => "Rename-Item '${winlogbeat::install_dir}/${filename}' winlogbeat",
     creates  => "${winlogbeat::install_dir}/winlogbeat",
     provider => powershell,

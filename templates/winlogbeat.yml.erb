@@ -1,0 +1,42 @@
+<%- if @winlogbeat_config['output']['file'] -%>
+<%- if @winlogbeat_config['output']['file']['rotate_every_kb'] -%>
+<%- @winlogbeat_config['output']['file']['rotate_every_kb'] = Integer(@winlogbeat_config['output']['file']['rotate_every_kb']) -%>
+<%- end -%>
+<%- if @winlogbeat_config['output']['file']['number_of_files'] -%>
+<%- @winlogbeat_config['output']['file']['number_of_files'] = Integer(@winlogbeat_config['output']['file']['number_of_files']) -%>
+<%- end -%>
+<%- end -%>
+<%- if @winlogbeat_config['output']['elasticsearch'] -%>
+<%- if @winlogbeat_config['output']['elasticsearch']['port'] -%>
+<%- @winlogbeat_config['output']['elasticsearch']['port'] = Integer(@winlogbeat_config['output']['elasticsearch']['port']) -%>
+<%- end -%>
+<%- end -%>
+<%- if @winlogbeat_config['output']['logstash'] -%>
+<%- if @winlogbeat_config['output']['logstash']['bulk_max_size'] -%>
+<%- @winlogbeat_config['output']['logstash']['bulk_max_size'] = Integer(@winlogbeat_config['output']['logstash']['bulk_max_size']) -%>
+<%- end -%>
+<%- if @winlogbeat_config['output']['logstash']['port'] -%>
+<%- @winlogbeat_config['output']['logstash']['port'] = Integer(@winlogbeat_config['output']['logstash']['port']) -%>
+<%- end -%>
+<%- end -%>
+<%- if @winlogbeat_config['shipper'] -%>
+<%- if @winlogbeat_config['shipper']['refresh_topology_freq'] -%>
+<%- @winlogbeat_config['shipper']['refresh_topology_freq'] = Integer(@winlogbeat_config['shipper']['refresh_topology_freq']) -%>
+<%- end -%>
+<%- if @winlogbeat_config['shipper']['topology_expire'] -%>
+<%- @winlogbeat_config['shipper']['topology_expire'] = Integer(@winlogbeat_config['shipper']['topology_expire']) -%>
+<%- end -%>
+<%- if @winlogbeat_config['shipper']['queue_size'] -%>
+<%- @winlogbeat_config['shipper']['queue_size'] = Integer(@winlogbeat_config['shipper']['queue_size']) -%>
+<%- end -%>
+<%- end -%>
+<%- if @winlogbeat_config['logging']['files'] -%>
+<%- if @winlogbeat_config['logging']['files']['rotateeverybytes'] -%>
+<%- @winlogbeat_config['logging']['files']['rotateeverybytes'] = Integer(@winlogbeat_config['logging']['files']['rotateeverybytes']) -%>
+<%- end -%>
+<%- if @winlogbeat_config['logging']['files']['keepfiles'] -%>
+<%- @winlogbeat_config['logging']['files']['keepfiles'] = Integer(@winlogbeat_config['logging']['files']['keepfiles']) -%>
+<%- end -%>
+<%- end -%>
+### Winlogbeat configuration managed by Puppet ###
+<%= @winlogbeat_config.to_yaml() %>

@@ -26,7 +26,7 @@
 # @param event_logs [Hash] Event_logs that will be forwarded.
 # @param event_logs_merge [Boolean] Whether $event_logs should merge all hiera sources, or use simple automatic parameter lookup
 
-class winlogbeat {
+class winlogbeat (
   $conf_template    = $winlogbeat::params::conf_template,
   $config_file      = $winlogbeat::params::config_file,
   $download_url     = $winlogbeat::params::download_url,
@@ -39,7 +39,7 @@ class winlogbeat {
   $shipper          = $winlogbeat::params::shipper,
   $logging          = $winlogbeat::params::logging,
   $tmp_dir          = $winlogbeat::params::tmp_dir,
-  $event_logs       = {},
+  $event_logs       = [],
   $event_logs_merge = false,
 ) inherits winlogbeat::params {
 
@@ -48,16 +48,21 @@ class winlogbeat {
   validate_bool($event_logs_merge)
 
   if $event_logs_merge {
-    $event_logs_final = hiera_hash('winlogbeat::event_logs', $event_logs)
+    $event_logs_temp = hiera_array('winlogbeat::event_logs', $event_logs)
   } else {
-    $event_logs_final = $event_logs
+    $event_logs_temp = $event_logs
+  }
+
+  if !empty($event_logs_temp) {
+    $event_logs_final = prefix($event_logs_temp, "name: ")
   }
 
   if $config_file != $winlogbeat::params::config_file {
     warning('You\'ve specified a non-standard config_file location - winlogbeat may fail to start unless you\'re doing something to fix this')
   }
 
-  validate_hash($outputs, $logging, $event_logs_final)
+  validate_array($event_logs_final)
+  validate_hash($outputs, $logging)
   validate_string($registry_file, $package_ensure)
 
   anchor { 'winlogbeat::begin': } ->
