@@ -39,7 +39,7 @@ class winlogbeat (
   $shipper          = $winlogbeat::params::shipper,
   $logging          = $winlogbeat::params::logging,
   $tmp_dir          = $winlogbeat::params::tmp_dir,
-  $event_logs       = [],
+  $event_logs       = {},
   $event_logs_merge = false,
 ) inherits winlogbeat::params {
 
@@ -48,21 +48,16 @@ class winlogbeat (
   validate_bool($event_logs_merge)
 
   if $event_logs_merge {
-    $event_logs_temp = hiera_array('winlogbeat::event_logs', $event_logs)
+    $event_logs_final = hiera_hash('winlogbeat::event_logs', $event_logs)
   } else {
-    $event_logs_temp = $event_logs
-  }
-
-  if !empty($event_logs_temp) {
-    $event_logs_final = prefix($event_logs_temp, "name: ")
+    $event_logs_final = $event_logs
   }
 
   if $config_file != $winlogbeat::params::config_file {
     warning('You\'ve specified a non-standard config_file location - winlogbeat may fail to start unless you\'re doing something to fix this')
   }
 
-  validate_array($event_logs_final)
-  validate_hash($outputs, $logging)
+  validate_hash($outputs, $logging, $event_logs_final)
   validate_string($registry_file, $package_ensure)
 
   anchor { 'winlogbeat::begin': } ->

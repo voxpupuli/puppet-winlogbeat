@@ -1,9 +1,9 @@
 class winlogbeat::config {
+
+  $registry_file = $winlogbeat::registry_file
+  $event_logs    = $winlogbeat::event_logs_final
+
   $winlogbeat_config = {
-    'winlogbeat'   => {
-      'registry_file' => $winlogbeat::registry_file,
-      'event_logs'    => $winlogbeat::event_logs,
-    },
     'output'     => $winlogbeat::outputs,
     'shipper'    => $winlogbeat::shipper,
     'logging'    => $winlogbeat::logging,
