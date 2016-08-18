@@ -1,11 +1,14 @@
 ### winlogbeat configuration managed by Puppet (Ruby 1.8 version) ###
 ---
-  winlogbeat:
-    spool_size: <%= @winlogbeat_config['winlogbeat']['spool_size'] %>
-    publish_async: <%= @winlogbeat_config['winlogbeat']['publish_async'] %>
-    idle_timeout: <%= @winlogbeat_config['winlogbeat']['idle_timeout'] %>
-    registry_file: <%= @winlogbeat_config['winlogbeat']['registry_file'] %>
-    config_dir: <%= @winlogbeat_config['winlogbeat']['config_dir'] %>
+winlogbeat:
+  registry_file: <%= @registry_file %>
+  <%- if @event_logs != nil -%>
+  event_logs:
+    <%- @event_logs.each do |event_log,options| -%>
+    - name: <%= event_log %>
+      ignore_older: <%= options["ignore_older"] %>
+    <%- end -%>
+  <%- end -%>
 
   output:
     <%- if @winlogbeat_config['output']['elasticsearch'] != nil -%>

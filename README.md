@@ -1,4 +1,4 @@
-# winlogbeat
+# puppet-winlogbeat
 
 #### Table of Contents
 
@@ -14,70 +14,80 @@
 
 ## Description
 
-Start with a one- or two-sentence summary of what the module does and/or what
-problem it solves. This is your 30-second elevator pitch for your module.
-Consider including OS/Puppet version it works with.
-
-You can give more descriptive information in a second paragraph. This paragraph
-should answer the questions: "What does this module *do*?" and "Why would I use
-it?" If your module has a range of functionality (installation, configuration,
-management, etc.), this is the time to mention it.
+The `winlogbeat` module installs and configures the [winlogbeat log shipper](https://www.elastic.co/downloads/beats/winlogbeat) maintained by elastic.
 
 ## Setup
 
-### What winlogbeat affects **OPTIONAL**
+### What winlogbeat affects
 
-If it's obvious what your module touches, you can skip this section. For
-example, folks can probably figure out that your mysql_instance module affects
-their MySQL instances.
+By default `winlogbeat` downloads the software to your system, and installs winlogbeat along
+with required configurations.
 
-If there's more that they should know about, though, this is the place to mention:
+### Setup Requirements
 
-* A list of files, packages, services, or operations that the module will alter,
-  impact, or execute.
-* Dependencies that your module automatically installs.
-* Warnings or other important notices.
-
-### Setup Requirements **OPTIONAL**
-
-If your module requires anything extra before setting up (pluginsync enabled,
-etc.), mention it here.
-
-If your most recent release breaks compatibility or requires particular steps
-for upgrading, you might want to include an additional "Upgrading" section
-here.
+The `winlogbeat` module depends on:
+* [`puppetlabs/powershell`](https://forge.puppetlabs.com/puppetlabs/powershell)
+* [`puppetlabs/stdlib`](https://forge.puppetlabs.com/puppetlabs/stdlib)
+* [`lwf/remote_file`](https://forge.puppet.com/lwf/remote_file)
 
 ### Beginning with winlogbeat
 
-The very basic steps needed for a user to get the module up and running. This
-can include setup steps, if necessary, or it can be an example of the most
-basic use of the module.
+`winlogbeat` can be installed with `puppet module install skynetsolutions-winlogbeat` (or with r10k, librarian-puppet, etc.)
+
+The only required parameter, other than which event logs to ship, is the `outputs` parameter.
 
 ## Usage
 
-This section is where you describe how to customize, configure, and do the
-fancy stuff with your module here. It's especially helpful if you include usage
-examples and code samples for doing things with your module.
+All of the default values in winlogbeat follow the upstream defaults (at the time of writing).
 
-## Reference
+To ship files to [elasticsearch](https://www.elastic.co/guide/en/beats/winlogbeat/current/elasticsearch-output.html):
+```puppet
+class { 'winlogbeat':
+  outputs => {
+    'elasticsearch' => {
+     'hosts' => [
+       'http://localhost:9200',
+       'http://anotherserver:9200'
+     ],
+     'index'       => 'winlogbeat',
+     'cas'         => [
+        '/etc/pki/root/ca.pem',
+     ],
+    },
+  },
+}
 
-Here, include a complete list of your module's classes, types, providers,
-facts, along with the parameters for each. Users refer to this section (thus
-the name "Reference") to find specific details; most users don't read it per
-se.
+```
+
+To ship log files through [logstash](https://www.elastic.co/guide/en/beats/winlogbeat/current/logstash-output.html):
+```puppet
+class { 'winlogbeat':
+  outputs => {
+    'logstash'     => {
+     'hosts' => [
+       'localhost:5044',
+       'anotherserver:5044'
+     ],
+     'index'       => 'winlogbeat',
+     'loadbalance' => true,
+    },
+  },
+}
+
+```
+
+[Shipper](https://www.elastic.co/guide/en/beats/winlogbeat/current/configuration-shipper.html) and [logging](https://www.elastic.co/guide/en/beats/winlogbeat/current/configuration-logging.html) options can be configured the same way, and are documented on the [elastic website](https://www.elastic.co/guide/en/beats/winlogbeat/current/index.html).
 
 ## Limitations
 
-This is where you list OS compatibility, version compatibility, etc. If there
-are Known Issues, you might want to include them under their own heading here.
+This module doesn't load the [elasticsearch index template](https://www.elastic.co/guide/en/beats/winlogbeat/current/winlogbeat-template.html) into elasticsearch (required when shipping
+directly to elasticsearch).
 
 ## Development
 
-Since your module is awesome, other users will want to play with it. Let them
-know what the ground rules for contributing are.
+Pull requests and bug reports are welcome. If you're sending a pull request, please consider
+writing tests if applicable.
 
 ## Release Notes/Contributors/Etc. **Optional**
 
-If you aren't using changelog, put your release notes here (though you should
-consider using changelog). You can also add any additional sections you feel
-are necessary or important to include here. Please use the `## ` header.
+Used the [pcfens/filebeat](https://forge.puppet.com/pcfens/filebeat) module as a starting point.

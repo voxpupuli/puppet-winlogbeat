@@ -7,9 +7,20 @@
   "source": "https://github.com/skynetsolutions/puppet-winlogbeat",
   "project_page": "https://github.com/skynetsolutions/puppet-winlogbeat",
   "issues_url": "https://github.com/skynetsolutions/puppet-winlogbeat/issues",
-  "dependencies": [
-    {"name":"puppetlabs-stdlib","version_requirement":">= 1.0.0"}
+  "tags": ["filebeat", "logstash", "elasticsearch", "elastic"],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "Windows",
+      "operatingsystemrelease": [
+        "Server 2012",
+        "Server 2012 R2"
+      ]
+    }
   ],
-  "data_provider": null
+  "dependencies": [
+    {"name":"puppetlabs-powershell","version_requirement":">= 1.0.1 < 2.0.0"},
+    {"name":"puppetlabs-stdlib","version_requirement":">=4.6.0 <5.0.0"},
+    {"name":"lwf-remote_file","version_requirement":">= 0.2.0 < 2.0.0"},
+  ],
 }
 
