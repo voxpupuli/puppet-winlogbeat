@@ -88,6 +88,6 @@ directly to elasticsearch).
 Pull requests and bug reports are welcome. If you're sending a pull request, please consider
 writing tests if applicable.
 
-## Release Notes/Contributors/Etc. **Optional**
+## Release Notes/Contributors/Etc.
 
 Used the [pcfens/filebeat](https://forge.puppet.com/pcfens/filebeat) module as a starting point.
