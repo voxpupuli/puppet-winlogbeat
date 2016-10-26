@@ -36,6 +36,6 @@ class winlogbeat::install {
     command  => './install-service-winlogbeat.ps1',
     onlyif   => 'if(Get-WmiObject -Class Win32_Service -Filter "Name=\'winlogbeat\'") { exit 1 } else {exit 0 }',
     provider =>  powershell,
-    require  => Exec['rename folder'],
+    require  => Exec['rename winlogbeat folder'],
   }
 }

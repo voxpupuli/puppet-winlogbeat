@@ -1,5 +1,5 @@
 class winlogbeat::params {
-  $package_version = '1.2.3'
+  $package_version = '1.3.1'
   $service_ensure = running
   $service_enable = true
   $outputs        = {}

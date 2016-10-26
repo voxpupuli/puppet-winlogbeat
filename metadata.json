@@ -1,13 +1,13 @@
 {
   "name": "skynetsolutions-winlogbeat",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": "skynetsolutions",
   "summary": "A module to install and manage the winlogbeat log shipper",
   "license": "Apache-2.0",
   "source": "https://github.com/skynetsolutions/puppet-winlogbeat",
   "project_page": "https://github.com/skynetsolutions/puppet-winlogbeat",
   "issues_url": "https://github.com/skynetsolutions/puppet-winlogbeat/issues",
-  "tags": ["filebeat", "logstash", "elasticsearch", "elastic"],
+  "tags": ["winlogbeat", "logstash", "elasticsearch", "elastic"],
   "operatingsystem_support": [
     {
       "operatingsystem": "Windows",
@@ -18,8 +18,8 @@
     }
   ],
   "dependencies": [
-    {"name":"puppetlabs-powershell","version_requirement":">= 1.0.1 < 2.0.0"},
-    {"name":"puppetlabs-stdlib","version_requirement":">=4.6.0 <5.0.0"},
+    {"name":"puppetlabs-powershell","version_requirement":">= 1.0.1 < 3.0.0"},
+    {"name":"puppetlabs-stdlib","version_requirement":">= 4.6.0 < 5.0.0"},
     {"name":"lwf-remote_file","version_requirement":">= 0.2.0 < 2.0.0"}
   ]
 }
