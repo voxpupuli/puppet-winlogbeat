@@ -16,6 +16,10 @@
 
 The `winlogbeat` module installs and configures the [winlogbeat log shipper](https://www.elastic.co/downloads/beats/winlogbeat) maintained by elastic.
 
+## Changelog
+0.1.3
+ - Now uses Chocolatey instead of custom installation code.
+
 ## Setup
 
 ### What winlogbeat affects

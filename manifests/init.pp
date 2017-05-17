@@ -27,20 +27,23 @@
 # @param event_logs_merge [Boolean] Whether $event_logs should merge all hiera sources, or use simple automatic parameter lookup
 
 class winlogbeat (
-  $conf_template    = $winlogbeat::params::conf_template,
-  $config_file      = $winlogbeat::params::config_file,
-  $download_url     = $winlogbeat::params::download_url,
-  $install_dir      = $winlogbeat::params::install_dir,
-  $outputs          = $winlogbeat::params::outputs,
-  $package_ensure   = $winlogbeat::params::package_ensure,
-  $registry_file    = $winlogbeat::params::registry_file,
-  $service_enable   = $winlogbeat::params::service_enable,
-  $service_ensure   = $winlogbeat::params::service_ensure,
-  $shipper          = $winlogbeat::params::shipper,
-  $logging          = $winlogbeat::params::logging,
-  $tmp_dir          = $winlogbeat::params::tmp_dir,
-  $event_logs       = {},
-  $event_logs_merge = false,
+  $conf_template         = $winlogbeat::params::conf_template,
+  $config_file           = $winlogbeat::params::config_file,
+  # $download_url          = $winlogbeat::params::download_url,
+  # $install_dir           = $winlogbeat::params::install_dir,
+  $outputs               = $winlogbeat::params::outputs,
+  $registry_file         = $winlogbeat::params::registry_file,
+  $service_enable        = $winlogbeat::params::service_enable,
+  $service_ensure        = $winlogbeat::params::service_ensure,
+  $shipper               = $winlogbeat::params::shipper,
+  $logging               = $winlogbeat::params::logging,
+  $tmp_dir               = $winlogbeat::params::tmp_dir,
+  $event_logs            = {},
+  $event_logs_merge      = false,
+  $winlogbeat_pkg_name   = $winlogbeat::params::winlogbeat_pkg_name,
+  $winlogbeat_pkg_ensure = $winlogbeat::params::winlogbeat_pkg_ensure,
+  $winlogbeat_version    = $winlogbeat::params::winlogbeat_pkg_version,
+  $winlogbeat_source     = $winlogbeat::params::winlogbeat_pkg_source,
 ) inherits winlogbeat::params {
 
   $kernel_fail_message = "${::kernel} is not supported by winlogbeat."
@@ -53,12 +56,12 @@ class winlogbeat (
     $event_logs_final = $event_logs
   }
 
-  if $config_file != $winlogbeat::params::config_file {
-    warning('You\'ve specified a non-standard config_file location - winlogbeat may fail to start unless you\'re doing something to fix this')
-  }
+  # if $config_file != $winlogbeat::params::config_file {
+  #   warning('You\'ve specified a non-standard config_file location - winlogbeat may fail to start unless you\'re doing something to fix this')
+  # }
 
   validate_hash($outputs, $logging, $event_logs_final)
-  validate_string($registry_file, $package_ensure)
+  validate_string($registry_file, $winlogbeat_pkg_ensure)
 
   anchor { 'winlogbeat::begin': } ->
   class { 'winlogbeat::install': } ->

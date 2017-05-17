@@ -1,3 +1,4 @@
+# winlogbeat::config
 class winlogbeat::config {
 
   $registry_file = $winlogbeat::registry_file
