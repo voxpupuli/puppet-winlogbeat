@@ -1,3 +1,4 @@
+# winlogbeat::service
 class winlogbeat::service {
   service { 'winlogbeat':
     ensure   => $winlogbeat::service_ensure,
