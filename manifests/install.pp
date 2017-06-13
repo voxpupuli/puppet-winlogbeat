@@ -1,41 +1,76 @@
 class winlogbeat::install {
+  # I'd like to use chocolatey to do this install, but the package for chocolatey is
+  # failing for updates and seems rather unpredictable at the moment. We may revisit
+  # that in the future as it would greatly simplify this code and basically reduce it to
+  # one package resource with type => chocolatey....
+
   $filename = regsubst($winlogbeat::real_download_url, '^https.*\/([^\/]+)\.[^.].*', '\1')
-  $foldername = 'winlogbeat'
+  $foldername = 'Winlogbeat'
+  $zip_file = join([$winlogbeat::tmp_dir, "${filename}.zip"], '/')
+  $install_folder = join([$winlogbeat::install_dir, $foldername], '/')
+  $version_file = join([$install_folder, $filename], '/')
+
+  Exec {
+    provider => powershell,
+  }
 
   if ! defined(File[$winlogbeat::install_dir]) {
     file { $winlogbeat::install_dir:
-      ensure => directory
+      ensure => directory,
     }
   }
 
-  remote_file {"${winlogbeat::tmp_dir}/${filename}.zip":
-    ensure      => present,
-    source      => $winlogbeat::real_download_url,
-    verify_peer => false,
+  # Note: We can use archive for unzip and cleanup, thus removing the following two resources.
+  # However, this requires 7zip, which archive can install via chocolatey:
+  # https://github.com/voxpupuli/puppet-archive/blob/master/manifests/init.pp#L31
+  # I'm not choosing to impose those dependencies on anyone at this time...
+  archive { $zip_file:
+    source       => $winlogbeat::real_download_url,
+    cleanup      => false,
+    creates      => $version_file,
+    proxy_server => $winlogbeat::proxy_address,
   }
 
   exec { "unzip ${filename}":
-    command  => "\$sh=New-Object -COM Shell.Application;\$sh.namespace((Convert-Path '${winlogbeat::install_dir}')).Copyhere(\$sh.namespace((Convert-Path '${winlogbeat::tmp_dir}/${filename}.zip')).items(), 16)",
-    creates  => "${winlogbeat::install_dir}/winlogbeat",
-    provider => powershell,
-    require  => [
+    command => "\$sh=New-Object -COM Shell.Application;\$sh.namespace((Convert-Path '${winlogbeat::install_dir}')).Copyhere(\$sh.namespace((Convert-Path '${zip_file}')).items(), 16)",
+    creates => $version_file,
+    require => [
       File[$winlogbeat::install_dir],
-      Remote_file["${winlogbeat::tmp_dir}/${filename}.zip"],
+      Archive[$zip_file],
     ],
   }
 
-  exec { 'rename winlogbeat folder':
-    command  => "Rename-Item '${winlogbeat::install_dir}/${filename}' winlogbeat",
-    creates  => "${winlogbeat::install_dir}/winlogbeat",
-    provider => powershell,
-    require  => Exec["unzip ${filename}"],
+  # Clean up after ourselves
+  file { $zip_file:
+    ensure  => absent,
+    backup  => false,
+    require => Exec["unzip ${filename}"],
+  }
+
+  # You can't remove the old dir while the service has files locked...
+  exec { "stop service ${filename}":
+    command => 'Set-Service -Name winlogbeat -Status Stopped',
+    creates => $version_file,
+    onlyif  => 'if(Get-WmiObject -Class Win32_Service -Filter "Name=\'winlogbeat\'") {exit 0} else {exit 1}',
+    require => Exec["unzip ${filename}"],
+  }
+
+  exec { "rename ${filename}":
+    command => "Remove-Item '${install_folder}' -Recurse -Force -ErrorAction SilentlyContinue; Rename-Item '${winlogbeat::install_dir}/${filename}' '${install_folder}'",
+    creates => $version_file,
+    require => Exec["stop service ${filename}"],
+  }
+
+  exec { "mark ${filename}":
+    command => "New-Item '${version_file}' -ItemType file",
+    creates => $version_file,
+    require => Exec["rename ${filename}"],
   }
 
   exec { "install ${filename}":
-    cwd      => "${winlogbeat::install_dir}/winlogbeat",
-    command  => './install-service-winlogbeat.ps1',
-    onlyif   => 'if(Get-WmiObject -Class Win32_Service -Filter "Name=\'winlogbeat\'") { exit 1 } else {exit 0 }',
-    provider =>  powershell,
-    require  => Exec['rename winlogbeat folder'],
+    cwd         => $install_folder,
+    command     => './install-service-winlogbeat.ps1',
+    refreshonly => true,
+    subscribe   => Exec["mark ${filename}"],
   }
 }
