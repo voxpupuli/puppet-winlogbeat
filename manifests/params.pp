@@ -1,30 +1,38 @@
 class winlogbeat::params {
-  $package_version = '1.3.1'
-  $service_ensure = running
-  $service_enable = true
-  $outputs        = {}
-  $shipper        = {}
-  $logging        = {}
-  $run_options    = {}
+  $service_ensure       = running
+  $service_enable       = true
+  $beat_name            = $::fqdn
+  $tags                 = []
+  $queue_size           = 1000
+  $max_procs            = undef
+  $fields               = {}
+  $fields_under_root    = false
+  $outputs              = {}
+  $shipper              = {}
+  $logging              = {}
+  $run_options          = {}
+  $use_generic_template = false
+  $kernel_fail_message  = "${::kernel} is not supported by winlogbeat."
 
-  if versioncmp('1.9.1', $::rubyversion) > 0 {
-    $conf_template = "${module_name}/winlogbeat.yml.ruby18.erb"
-  } else {
-    $conf_template = "${module_name}/winlogbeat.yml.erb"
-  }
+  # These are irrelevant as long as the template is set based on the major_version parameter
+  # if versioncmp('1.9.1', $::rubyversion) > 0 {
+  #   $conf_template = "${module_name}/winlogbeat.yml.ruby18.erb"
+  # } else {
+  #   $conf_template = "${module_name}/winlogbeat.yml.erb"
+  # }
 
   case $::kernel {
     'Windows' : {
+      $package_ensure   = '5.1.1'
       $config_file      = 'C:/Program Files/Winlogbeat/winlogbeat.yml'
-      $download_url     = "https://download.elastic.co/beats/winlogbeat/winlogbeat-${package_version}-windows.zip"
+      $registry_file    = 'C:/ProgramData/winlogbeat/.winlogbeat.yml'
       $install_dir      = 'C:/Program Files'
-      $registry_file    = 'C:/Program Files/winlogbeat/.winlogbeat.yml'
       $tmp_dir          = 'C:/Windows/Temp'
       $service_provider = undef
     }
 
     default : {
-      fail($winlogbeat::kernel_fail_message)
+      fail($kernel_fail_message)
     }
   }
 }

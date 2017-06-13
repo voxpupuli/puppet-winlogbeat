@@ -1,5 +1,5 @@
 class winlogbeat::install {
-  $filename = regsubst($winlogbeat::download_url, '^https.*\/([^\/]+)\.[^.].*', '\1')
+  $filename = regsubst($winlogbeat::real_download_url, '^https.*\/([^\/]+)\.[^.].*', '\1')
   $foldername = 'winlogbeat'
 
   if ! defined(File[$winlogbeat::install_dir]) {
@@ -10,7 +10,7 @@ class winlogbeat::install {
 
   remote_file {"${winlogbeat::tmp_dir}/${filename}.zip":
     ensure      => present,
-    source      => $winlogbeat::download_url,
+    source      => $winlogbeat::real_download_url,
     verify_peer => false,
   }
 
