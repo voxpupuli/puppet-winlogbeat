@@ -19,8 +19,8 @@ class winlogbeat::config {
 
   case $::kernel {
     'Windows' : {
-      $winlogbeat_path = 'c:\Program Files\Winlogbeat\winlogbeat.exe'
-
+      $cmd_install_dir = regsubst($winlogbeat::install_dir, '/', '\\', 'G')
+      $winlogbeat_path = join([$cmd_install_dir, 'Winlogbeat', 'winlogbeat.exe'], '\\')
       file {'winlogbeat.yml':
         ensure       => file,
         path         => $winlogbeat::config_file,

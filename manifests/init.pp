@@ -51,7 +51,7 @@ class winlogbeat (
   $fields               = $winlogbeat::params::fields,
   $fields_under_root    = $winlogbeat::params::fields_under_root,
   $metrics              = undef,
-  #### End v5 onlly ####
+  #### End v5 only ####
   $event_logs           = {},
   $event_logs_merge     = false,
   $proxy_address        = undef,
