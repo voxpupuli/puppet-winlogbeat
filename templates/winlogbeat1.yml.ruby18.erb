@@ -1,10 +1,10 @@
 ### winlogbeat configuration managed by Puppet (Ruby 1.8 version) ###
 ---
 winlogbeat:
-  registry_file: <%= @registry_file %>
-  <%- if @event_logs != nil -%>
+  registry_file: <%= @winlogbeat_config['winlogbeat']['registry_file'] %>
+  <%- if @winlogbeat_config['winlogbeat']['event_logs'] != nil -%>
   event_logs:
-    <%- @event_logs.each do |event_log,options| -%>
+    <%- @winlogbeat_config['winlogbeat']['event_logs'].each do |event_log,options| -%>
     - name: <%= event_log %>
       ignore_older: <%= options["ignore_older"] %>
     <%- end -%>
