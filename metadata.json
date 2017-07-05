@@ -1,6 +1,6 @@
 {
   "name": "skynetsolutions-winlogbeat",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "author": "skynetsolutions",
   "summary": "A module to install and manage the winlogbeat log shipper",
   "license": "Apache-2.0",
