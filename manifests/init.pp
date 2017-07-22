@@ -86,7 +86,7 @@ class winlogbeat (
   }
 
   $real_download_url = $download_url ? {
-    undef   => "https://artifacts.elastic.co/downloads/beats/winlogbeat/winlogbeat-${package_ensure}-windows-x86_64.zip",
+    undef   => "https://artifacts.elastic.co/downloads/beats/winlogbeat/winlogbeat-${package_ensure}-windows-${winlogbeat::params::url_arch}.zip",
     default => $download_url,
   }
 
