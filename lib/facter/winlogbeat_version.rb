@@ -1,6 +1,6 @@
 require 'facter'
 Facter.add('winlogbeat_version') do
-  confine :kernel => %w(Windows) # rubocop:disable Style/HashSyntax
+  confine :kernel => %w[Windows] # rubocop:disable Style/HashSyntax
   if File.exist?('c:\Program Files\Winlogbeat\winlogbeat.exe')
     winlogbeat_version = Facter::Util::Resolution.exec('"c:\Program Files\Winlogbeat\winlogbeat.exe" --version')
   end
