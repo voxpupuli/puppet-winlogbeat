@@ -107,9 +107,9 @@ class winlogbeat (
     validate_re($proxy_address, ['^(http(?:s)?\:\/\/[a-zA-Z0-9]+(?:(?:\.|\-)[a-zA-Z0-9]+)+(?:\:\d+)?(?:\/[\w\-]+)*(?:\/?|\/\w+\.[a-zA-Z]{2,4}(?:\?[\w]+\=[\w\-]+)?)?(?:\&[\w]+\=[\w\-]+)*)$'], 'ERROR: You must enter a proxy url in a valid format i.e. http://proxy.net:3128')
   }
 
-  anchor { 'winlogbeat::begin': } ->
-  class { '::winlogbeat::install': } ->
-  class { '::winlogbeat::config': } ->
-  class { '::winlogbeat::service': } ->
-  anchor { 'winlogbeat::end': }
+  anchor { 'winlogbeat::begin': }
+  -> class { '::winlogbeat::install': }
+  -> class { '::winlogbeat::config': }
+  -> class { '::winlogbeat::service': }
+  -> anchor { 'winlogbeat::end': }
 }
