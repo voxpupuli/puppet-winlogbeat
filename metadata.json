@@ -1,12 +1,12 @@
 {
-  "name": "skynetsolutions-winlogbeat",
+  "name": "puppet-winlogbeat",
   "version": "0.2.0",
-  "author": "skynetsolutions",
+  "author": "Vox Pupuli",
   "summary": "A module to install and manage the winlogbeat log shipper",
   "license": "Apache-2.0",
-  "source": "https://github.com/skynetsolutions/puppet-winlogbeat",
-  "project_page": "https://github.com/skynetsolutions/puppet-winlogbeat",
-  "issues_url": "https://github.com/skynetsolutions/puppet-winlogbeat/issues",
+  "source": "https://github.com/voxpupuli/puppet-winlogbeat",
+  "project_page": "https://github.com/voxpupuli/puppet-winlogbeat",
+  "issues_url": "https://github.com/voxpupuli/puppet-winlogbeat/issues",
   "tags": [
     "winlogbeat",
     "logstash",
