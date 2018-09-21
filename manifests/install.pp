@@ -9,6 +9,7 @@ class winlogbeat::install {
   $zip_file = join([$winlogbeat::tmp_dir, "${filename}.zip"], '/')
   $install_folder = join([$winlogbeat::install_dir, $foldername], '/')
   $version_file = join([$install_folder, $filename], '/')
+  $app_file = join([$install_folder, 'winlogbeat.exe'], '/')
 
   Exec {
     provider => powershell,
@@ -33,7 +34,7 @@ class winlogbeat::install {
 
   exec { "unzip ${filename}":
     command => "\$sh=New-Object -COM Shell.Application;\$sh.namespace((Convert-Path '${winlogbeat::install_dir}')).Copyhere(\$sh.namespace((Convert-Path '${zip_file}')).items(), 16)",
-    creates => $version_file,
+    creates => $app_file,
     require => [
       File[$winlogbeat::install_dir],
       Archive[$zip_file],
