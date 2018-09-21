@@ -61,6 +61,8 @@ class winlogbeat (
 
   if $major_version == undef and getvar('::winlogbeat_version') == undef {
     $real_version = '5'
+  } elsif $major_version == undef and versioncmp($::winlogbeat_version, '6.0.0') >= 0 {
+    $real_version = '6'
   } elsif $major_version == undef and versioncmp($::winlogbeat_version, '5.0.0') >= 0 {
     $real_version = '5'
   } elsif $major_version == undef and versioncmp($::winlogbeat_version, '5.0.0') < 0 {
@@ -82,6 +84,12 @@ class winlogbeat (
       $real_conf_template = "${module_name}/winlogbeat1.yml.erb"
     } else {
       $real_conf_template = "${module_name}/winlogbeat5.yml.erb"
+    }
+  } elsif $real_version == '6' {
+    if $use_generic_template {
+      $real_conf_template = "${module_name}/winlogbeat1.yml.erb"
+    } else {
+      $real_conf_template = "${module_name}/winlogbeat6.yml.erb"
     }
   }
 

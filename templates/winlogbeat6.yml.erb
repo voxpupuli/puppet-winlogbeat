@@ -1,0 +1,692 @@
+#======================= Winlogbeat specific options ==========================
+
+winlogbeat.registry_file: <%= @winlogbeat_config['winlogbeat']['registry_file'] %>
+
+<%- if @winlogbeat_config['winlogbeat']['metrics'] != nil && @winlogbeat_config['winlogbeat']['metrics']['bindaddress'] != nil -%>
+winlogbeat.metrics:
+  bindaddress: <%= @winlogbeat_config['winlogbeat']['metrics']['bindaddress'] %>
+<%- end -%>
+
+<%- if @winlogbeat_config['winlogbeat']['event_logs'].length > 0 -%>
+winlogbeat.event_logs:
+  <%- @winlogbeat_config['winlogbeat']['event_logs'].each_pair do |name, options| -%>
+  - name: "<%= options['name'] || name %>"
+    <%- if options['ignore_older'] != nil -%>
+    ignore_older: <%= options['ignore_older'] %>
+    <%- end -%>
+    <%- if options['forwarded'] != nil -%>
+    forwarded: <%= options['forwarded'] %>
+    <%- end -%>
+    <%- if options['event_id'] != nil -%>
+    event_id: <%= options['event_id'] %>
+    <%- end -%>
+    <%- if options['level'] != nil -%>
+    level: <%= options['level'] %>
+    <%- end -%>
+    <%- if options['provider'] != nil -%>
+    provider:
+    <%- options['provider'].each do |p| -%>
+      - <%= p %>
+    <%- end -%>
+    <%- end -%>
+    <%- if options['include_xml'] != nil -%>
+    include_xml: <%= options['include_xml'] %>
+    <%- end -%>
+    <%- if options['tags'] != nil -%>
+    tags:
+    <%- options['tags'].each do |tag| -%>
+      - <%= tag %>
+    <%- end -%>
+    <%- end -%>
+    <%- if options['fields'] != nil -%>
+    fields:
+      <%- options['fields'].each_pair do |k, v| -%>
+      <%= k %>: <%= v %>
+      <%- end -%>
+    <%- end -%>
+    <%- if options['fields_under_root'] != nil -%>
+    fields_under_root: <%= options['fields_under_root'] %>
+    <%- end -%>
+  <%- end -%>
+<%- end -%>
+
+#================================ General ======================================
+
+name: <%= @winlogbeat_config['beat_name'] %>
+<%- if @winlogbeat_config['tags'].length > 0 -%>
+tags:
+<%- @winlogbeat_config['tags'].each do |tag| -%>
+  - <%= tag %>
+<%- end -%>
+<%- end -%>
+
+<%- if @winlogbeat_config['fields'].length > 0 -%>
+fields:
+  <%- @winlogbeat_config['fields'].each_pair do |k, v| -%>
+  <%= k %>: <%= v %>
+  <%- end -%>
+<%- end -%>
+
+fields_under_root: <%= @winlogbeat_config['fields_under_root'] %>
+
+<%- if @winlogbeat_config['max_procs'] != nil -%>
+max_procs: <%= @winlogbeat_config['max_procs'] %>
+<%- end -%>
+
+#================================ Processors ===================================
+
+# Processors are used to reduce the number of fields in the exported event or to
+# enhance the event with external metadata. This section defines a list of
+# processors that are applied one by one and the first one receives the initial
+# event:
+#
+#   event -> filter1 -> event1 -> filter2 ->event2 ...
+#
+# The supported processors are drop_fields, drop_event, include_fields, and
+# add_cloud_metadata.
+#
+# For example, you can use the following processors to keep the fields that
+# contain CPU load percentages, but remove the fields that contain CPU ticks
+# values:
+#
+#processors:
+#- include_fields:
+#    fields: ["cpu"]
+#- drop_fields:
+#    fields: ["cpu.user", "cpu.system"]
+#
+# The following example drops the events that have the HTTP response code 200:
+#
+#processors:
+#- drop_event:
+#    when:
+#       equals:
+#           http.code: 200
+#
+# The following example enriches each event with metadata from the cloud
+# provider about the host machine. It works on EC2, GCE, and DigitalOcean.
+#
+#processors:
+#- add_cloud_metadata:
+#
+
+#================================ Outputs ======================================
+
+<%- if @winlogbeat_config['output']['elasticsearch'] != nil -%>
+#-------------------------- Elasticsearch output ------------------------------
+output.elasticsearch:
+  <%- if @winlogbeat_config['output']['elasticsearch']['enabled'] != nil -%>
+  enabled: <%= @winlogbeat_config['output']['elasticsearch']['enabled'] %>
+  <%- end -%>
+  hosts:
+  <%- @winlogbeat_config['output']['elasticsearch']['hosts'].each do |host| -%>
+    - <%= host %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['elasticsearch']['compression_level'] != nil -%>
+  compression_level: <%= @winlogbeat_config['output']['elasticsearch']['compression_level'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['elasticsearch']['protocol'] != nil -%>
+  protocol: "<%= @winlogbeat_config['output']['elasticsearch']['protocol'] %>"
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['elasticsearch']['username'] != nil -%>
+  username: "<%= @winlogbeat_config['output']['elasticsearch']['username'] %>"
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['elasticsearch']['password'] != nil -%>
+  password: "<%= @winlogbeat_config['output']['elasticsearch']['password'] %>"
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['elasticsearch']['parameters'] != nil && @winlogbeat_config['output']['elasticsearch']['parameters'].length > 0 -%>
+  parameters:
+    <%- @winlogbeat_config['output']['elasticsearch']['parameters'].each_pair do |k, v| -%>
+    <%= k %>: <%= v %>
+    <%- end -%>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['elasticsearch']['worker'] != nil -%>
+  worker: <%= @winlogbeat_config['output']['elasticsearch']['worker'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['elasticsearch']['index'] != nil -%>
+  index: "<%= @winlogbeat_config['output']['elasticsearch']['index'] %>"
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['elasticsearch']['pipeline'] != nil -%>
+  pipeline: "<%= @winlogbeat_config['output']['elasticsearch']['pipeline'] %>"
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['elasticsearch']['pipelines'] != nil -%>
+  pipelines:
+  <%- @winlogbeat_config['output']['elasticsearch']['pipelines'].each do |pipeline| -%>
+    <%- if pipeline['name'] != nil -%>
+    - pipeline: "<%= pipeline['name'] %>"
+      when.equals:
+        <%= pipeline['filter'] %>: "<%= pipeline['pattern'] %>"
+    <%- end -%>
+  <%- end -%>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['elasticsearch']['indices'] != nil -%>
+  indices:
+  <%- @winlogbeat_config['output']['elasticsearch']['indices'].each do |indice| -%>
+    <%- if indice['name'] != nil -%>
+    - index: "<%= indice['name'] %>"
+      <%- if indice['pipeline'] != nil -%>
+      pipeline: "<%= indice['pipeline'] %>"
+      <%- end -%>
+      when.contains:
+        <%= indice['filter'] %>: "<%= indice['pattern'] %>"
+    <%- end -%>
+  <%- end -%>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['elasticsearch']['path'] != nil -%>
+  path: "<%= @winlogbeat_config['output']['elasticsearch']['path'] %>"
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['elasticsearch']['proxy_url'] != nil -%>
+  proxy_url: "<%= @winlogbeat_config['output']['elasticsearch']['proxy_url'] %>"
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['elasticsearch']['max_retries'] != nil -%>
+  max_retries: <%= @winlogbeat_config['output']['elasticsearch']['max_retries'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['elasticsearch']['bulk_max_size'] != nil -%>
+  bulk_max_size: <%= @winlogbeat_config['output']['elasticsearch']['bulk_max_size'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['elasticsearch']['timeout'] != nil -%>
+  timeout: <%= @winlogbeat_config['output']['elasticsearch']['timeout'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['elasticsearch']['flush_interval'] != nil -%>
+  flush_interval: <%= @winlogbeat_config['output']['elasticsearch']['flush_interval'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['elasticsearch']['template'] != nil -%>
+  template:
+    <%- if @winlogbeat_config['output']['elasticsearch']['template']['enabled'] != nil -%>
+    enabled: <%= @winlogbeat_config['output']['elasticsearch']['template']['enabled'] %>
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['elasticsearch']['template']['name'] != nil -%>
+    name: "<%= @winlogbeat_config['output']['elasticsearch']['template']['name'] %>"
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['elasticsearch']['template']['path'] != nil -%>
+    path: "<%= @winlogbeat_config['output']['elasticsearch']['template']['path'] %>"
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['elasticsearch']['template']['overwrite'] != nil -%>
+    overwrite: <%= @winlogbeat_config['output']['elasticsearch']['template']['name'] %>
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['elasticsearch']['template']['versions']['2.x'] != nil -%>
+    <%- if @winlogbeat_config['output']['elasticsearch']['template']['versions']['2.x']['enabled'] != nil -%>
+    versions.2x.enabled: <%= @winlogbeat_config['output']['elasticsearch']['template']['versions']['2.x']['enabled'] %>
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['elasticsearch']['template']['versions']['2.x']['path'] != nil -%>
+    versions.2x.path: "<%= @winlogbeat_config['output']['elasticsearch']['template']['versions']['2.x']['path'] %>"
+    <%- end -%>
+    <%- end -%>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['elasticsearch']['ssl'] != nil -%>
+  ssl:
+    <%- if @winlogbeat_config['output']['elasticsearch']['ssl']['enabled'] != nil -%>
+    enabled: <%= @winlogbeat_config['output']['elasticsearch']['ssl']['enabled'] %>
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['elasticsearch']['ssl']['verification_mode'] != nil -%>
+    verification_mode: <%= @winlogbeat_config['output']['elasticsearch']['ssl']['verification_mode'] %>
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['elasticsearch']['ssl']['supported_protocols'] != nil -%>
+    supported_protocols:
+    <%- @winlogbeat_config['output']['elasticsearch']['ssl']['supported_protocols'].each do |protocol| -%>
+      - <%= protocol %>
+      <%- end -%>
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['elasticsearch']['ssl']['certificate_authorities'] != nil -%>
+    certificate_authorities:
+    <%- @winlogbeat_config['output']['elasticsearch']['ssl']['certificate_authorities'].each do |ca| -%>
+      - <%= ca %>
+      <%- end -%>
+      <%- end -%>
+    <%- if @winlogbeat_config['output']['elasticsearch']['ssl']['certificate'] != nil -%>
+    certificate: "<%= @winlogbeat_config['output']['elasticsearch']['ssl']['certificate'] %>"
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['elasticsearch']['ssl']['key'] != nil -%>
+    key: "<%= @winlogbeat_config['output']['elasticsearch']['ssl']['key'] %>"
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['elasticsearch']['ssl']['key_passphrase'] != nil -%>
+    key_passphrase: '<%= @winlogbeat_config['output']['elasticsearch']['ssl']['key_passphrase'] %>'
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['elasticsearch']['ssl']['cipher_suites'] != nil -%>
+    cipher_suites:
+    <%- @winlogbeat_config['output']['elasticsearch']['ssl']['cipher_suites'].each do |cipher_suite| -%>
+      - <%= cipher_suite %>
+      <%- end -%>
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['elasticsearch']['ssl']['curve_types'] != nil -%>
+    curve_types:
+    <%- @winlogbeat_config['output']['elasticsearch']['ssl']['curve_types'].each do |curve_type| -%>
+      - <%= curve_type %>
+      <%- end -%>
+    <%- end -%>
+    <%- end -%>
+<%- end -%>
+<%- if @winlogbeat_config['output']['logstash'] != nil -%>
+#----------------------------- Logstash output --------------------------------
+output.logstash:
+  <%- if @winlogbeat_config['output']['logstash']['enabled'] != nil -%>
+  enabled: <%= @winlogbeat_config['output']['logstash']['enabled'] %>
+  <%- end -%>
+  hosts:
+  <%- @winlogbeat_config['output']['logstash']['hosts'].each do |host| -%>
+    - <%= host %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['logstash']['worker'] != nil -%>
+  worker: <%= @winlogbeat_config['output']['logstash']['worker'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['logstash']['compression_level'] != nil -%>
+  compression_level: <%= @winlogbeat_config['output']['logstash']['compression_level'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['logstash']['loadbalance'] != nil -%>
+  loadbalance: <%= @winlogbeat_config['output']['logstash']['loadbalance'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['logstash']['pipelining'] != nil -%>
+  pipelining: <%= @winlogbeat_config['output']['logstash']['pipelining'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['logstash']['index'] != nil -%>
+  index: <%= @winlogbeat_config['output']['logstash']['index'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['logstash']['proxy_url'] != nil -%>
+  proxy_url: <%= @winlogbeat_config['output']['logstash']['proxy_url'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['logstash']['proxy_use_local_resolver'] != nil -%>
+  proxy_use_local_resolver: <%= @winlogbeat_config['output']['logstash']['proxy_use_local_resolver'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['logstash']['ssl'] != nil -%>
+  ssl:
+    <%- if @winlogbeat_config['output']['logstash']['ssl']['enabled'] == false -%>
+    enabled: false
+    <%- else -%>
+    enabled: true
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['logstash']['ssl']['verification_mode'] != nil -%>
+    verification_mode: <%= @winlogbeat_config['output']['logstash']['ssl']['verification_mode'] %>
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['logstash']['ssl']['certificate_authorities'] != nil -%>
+    certificate_authorities:
+    <%- @winlogbeat_config['output']['logstash']['ssl']['certificate_authorities'].each do |ca| -%>
+      - <%= ca %>
+    <%- end -%>
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['logstash']['ssl']['certificate'] != nil -%>
+    certificate: "<%= @winlogbeat_config['output']['logstash']['ssl']['certificate'] %>"
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['logstash']['ssl']['key'] != nil -%>
+    key: "<%= @winlogbeat_config['output']['logstash']['ssl']['key'] %>"
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['logstash']['ssl']['key_passphrase'] != nil -%>
+    key_passphrase: '<%= @winlogbeat_config['output']['logstash']['ssl']['key_passphrase'] %>'
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['logstash']['ssl']['cipher_suites'] != nil -%>
+    cipher_suites:
+    <%- @winlogbeat_config['output']['logstash']['ssl']['cipher_suites'].each do |cipher_suite| -%>
+      - <%= cipher_suite %>
+    <%- end -%>
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['logstash']['ssl']['curve_types'] != nil -%>
+    curve_types:
+    <%- @winlogbeat_config['output']['logstash']['ssl']['curve_types'].each do |curve_type| -%>
+      - <%= curve_type %>
+    <%- end -%>
+    <%- end -%>
+  <%- end -%>
+<%- end -%>
+<%- if @winlogbeat_config['output']['kafka'] != nil -%>
+#------------------------------- Kafka output ---------------------------------
+output.kafka:
+  <%- if @winlogbeat_config['output']['kafka']['enabled'] != nil -%>
+  enabled: <%= @winlogbeat_config['output']['kafka']['enabled'] %>
+  <%- end -%>
+  hosts:
+  <%- @winlogbeat_config['output']['kafka']['hosts'].each do |host| -%>
+    - <%= host %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['kafka']['topic'] != nil -%>
+  topic: <%= @winlogbeat_config['output']['kafka']['topic'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['kafka']['round_robin'] != nil -%>
+  round_robin:
+    group_events: <%= @winlogbeat_config['output']['kafka']['round_robin']['group_events'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['kafka']['key'] != nil -%>
+  key: '<%= @winlogbeat_config['output']['kafka']['key'] %>'
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['kafka']['codec.format'] != nil -%>
+  codec.format:
+    <%- if @winlogbeat_config['output']['kafka']['codec.format']['string'] != nil -%>
+    string: <%= @winlogbeat_config['output']['kafka']['codec.format']['string'] %>
+    <%- end -%>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['kafka']['partition'] != nil and @winlogbeat_config['output']['kafka']['partition']['hash'] != nil -%>
+  partition.hash:
+    <%- if @winlogbeat_config['output']['kafka']['partition']['hash']['reachable_only'] != nil -%>
+    reachable_only: <%= @winlogbeat_config['output']['kafka']['partition']['hash']['reachable_only'] %>
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['kafka']['partition']['hash']['hash'] != nil -%>
+    hash:
+    <%- @winlogbeat_config['output']['kafka']['partition']['hash']['hash'].each do |value| -%>
+      - <%= value %>
+    <%- end -%>
+    <%- end -%>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['kafka']['username'] != nil -%>
+  username: '<%= @winlogbeat_config['output']['kafka']['username'] %>'
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['kafka']['password'] != nil -%>
+  password: '<%= @winlogbeat_config['output']['kafka']['password'] %>'
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['kafka']['version'] != nil -%>
+  version: <%= @winlogbeat_config['output']['kafka']['version'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['kafka']['metadata'] != nil -%>
+  metadata:
+    <%- if @winlogbeat_config['output']['kafka']['retry']['max'] != nil -%>
+    retry.max: 3
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['kafka']['retry']['backoff'] != nil -%>
+    retry.backoff: 3
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['kafka']['retry']['frequency'] != nil -%>
+    retry.frequency: 3
+    <%- end -%>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['kafka']['worker'] != nil -%>
+  worker: <%= @winlogbeat_config['output']['kafka']['worker'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['kafka']['max_retries'] != nil -%>
+  max_retries: <%= @winlogbeat_config['output']['kafka']['max_retries'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['kafka']['bulk_max_size'] != nil -%>
+  bulk_max_size: <%= @winlogbeat_config['output']['kafka']['bulk_max_size'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['kafka']['timeout'] != nil -%>
+  timeout: <%= @winlogbeat_config['output']['kafka']['timeout'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['kafka']['broker_timeout'] != nil -%>
+  broker_timeout: <%= @winlogbeat_config['output']['kafka']['broker_timeout'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['kafka']['channel_buffer_size'] != nil -%>
+  channel_buffer_size: <%= @winlogbeat_config['output']['kafka']['channel_buffer_size'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['kafka']['keep_alive'] != nil -%>
+  keep_alive: <%= @winlogbeat_config['output']['kafka']['keep_alive'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['kafka']['compression'] != nil -%>
+  compression: <%= @winlogbeat_config['output']['kafka']['compression'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['kafka']['max_message_bytes'] != nil -%>
+  max_message_bytes: <%= @winlogbeat_config['output']['kafka']['max_message_bytes'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['kafka']['required_acks'] != nil -%>
+  required_acks: <%= @winlogbeat_config['output']['kafka']['required_acks'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['kafka']['flush_interval'] != nil -%>
+  flush_interval: <%= @winlogbeat_config['output']['kafka']['flush_interval'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['kafka']['client_id'] != nil -%>
+  client_id: <%= @winlogbeat_config['output']['kafka']['client_id'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['kafka']['ssl'] != nil -%>
+  ssl:
+    <%- if @winlogbeat_config['output']['kafka']['ssl']['enabled'] != nil -%>
+    enabled: <%= @winlogbeat_config['output']['kafka']['ssl']['enabled'] %>
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['kafka']['ssl']['verification_mode'] != nil -%>
+    verification_mode: <%= @winlogbeat_config['output']['kafka']['ssl']['verification_mode'] %>
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['kafka']['ssl']['supported_protocols'] != nil -%>
+    supported_protocols:
+    <%- @winlogbeat_config['output']['kafka']['ssl']['supported_protocols'].each do |protocol| -%>
+      - <%= protocol %>
+    <%- end -%>
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['kafka']['ssl']['certificate_authorities'] != nil -%>
+    certificate_authorities:
+    <%- @winlogbeat_config['output']['kafka']['ssl']['certificate_authorities'].each do |ca| -%>
+      - <%= ca %>
+    <%- end -%>
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['kafka']['ssl']['certificate'] != nil -%>
+    certificate: "<%= @winlogbeat_config['output']['kafka']['ssl']['certificate'] %>"
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['kafka']['ssl']['key'] != nil -%>
+    key: "<%= @winlogbeat_config['output']['kafka']['ssl']['key'] %>"
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['kafka']['ssl']['key_passphrase'] != nil -%>
+    key_passphrase: '<%= @winlogbeat_config['output']['kafka']['ssl']['key_passphrase'] %>'
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['kafka']['ssl']['cipher_suites'] != nil -%>
+    cipher_suites:
+    <%- @winlogbeat_config['output']['kafka']['ssl']['cipher_suites'].each do |cipher_suite| -%>
+      - <%= cipher_suite %>
+    <%- end -%>
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['kafka']['ssl']['curve_types'] != nil -%>
+    curve_types:
+    <%- @winlogbeat_config['output']['kafka']['ssl']['curve_types'].each do |curve_type| -%>
+      - <%= curve_type %>
+    <%- end -%>
+    <%- end -%>
+  <%- end -%>
+<%- end -%>
+<%- if @winlogbeat_config['output']['redis'] != nil -%>
+#------------------------------- Redis output ---------------------------------
+output.redis:
+  <%- if @winlogbeat_config['output']['redis']['enabled'] != nil -%>
+  enabled: <%= @winlogbeat_config['output']['redis']['enabled'] %>
+  <%- end -%>
+  hosts:
+  <%- @winlogbeat_config['output']['redis']['hosts'].each do |host| -%>
+    - <%= host %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['redis']['port'] != nil -%>
+  port: <%= @winlogbeat_config['output']['redis']['port'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['redis']['key'] != nil -%>
+  key: <%= @winlogbeat_config['output']['redis']['key'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['redis']['password'] != nil -%>
+  password: <%= @winlogbeat_config['output']['redis']['password'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['redis']['db'] != nil -%>
+  db: <%= @winlogbeat_config['output']['redis']['db'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['redis']['datetype'] != nil -%>
+  datetype: <%= @winlogbeat_config['output']['redis']['datetype'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['redis']['worker'] != nil -%>
+  worker: <%= @winlogbeat_config['output']['redis']['worker'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['redis']['loadbalance'] != nil -%>
+  loadbalance: <%= @winlogbeat_config['output']['redis']['loadbalance'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['redis']['timeout'] != nil -%>
+  timeout: <%= @winlogbeat_config['output']['redis']['timeout'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['redis']['max_retries'] != nil -%>
+  max_retries: <%= @winlogbeat_config['output']['redis']['max_retries'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['redis']['bulk_max_size'] != nil -%>
+  bulk_max_size: <%= @winlogbeat_config['output']['redis']['bulk_max_size'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['redis']['proxy_url'] != nil -%>
+  proxy_url: <%= @winlogbeat_config['output']['redis']['proxy_url'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['redis']['proxy_use_local_resolver'] != nil -%>
+  proxy_use_local_resolver: <%= @winlogbeat_config['output']['redis']['proxy_use_local_resolver'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['redis']['ssl'] != nil -%>
+  ssl:
+    <%- if @winlogbeat_config['output']['redis']['ssl']['enabled'] != nil -%>
+    enabled: <%= @winlogbeat_config['output']['logstash']['ssl']['enabled'] %>
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['redis']['ssl']['verification_mode'] != nil -%>
+    verification_mode: <%= @winlogbeat_config['output']['redis']['ssl']['verification_mode'] %>
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['redis']['ssl']['supported_protocols'] != nil -%>
+    supported_protocols:
+    <%- @winlogbeat_config['output']['redis']['ssl']['supported_protocols'].each do |protocol| -%>
+      - <%= protocol %>
+    <%- end -%>
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['redis']['ssl']['certificate_authorities'] != nil -%>
+    certificate_authorities:
+    <%- @winlogbeat_config['output']['redis']['ssl']['certificate_authorities'].each do |ca| -%>
+      - <%= ca %>
+    <%- end -%>
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['redis']['ssl']['certificate'] != nil -%>
+    certificate: "<%= @winlogbeat_config['output']['redis']['ssl']['certificate'] %>"
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['redis']['ssl']['key'] != nil -%>
+    key: "<%= @winlogbeat_config['output']['redis']['ssl']['key'] %>"
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['redis']['ssl']['key_passphrase'] != nil -%>
+    key_passphrase: '<%= @winlogbeat_config['output']['redis']['ssl']['key_passphrase'] %>'
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['redis']['ssl']['cipher_suites'] != nil -%>
+    cipher_suites:
+    <%- @winlogbeat_config['output']['redis']['ssl']['cipher_suites'].each do |cipher_suite| -%>
+      - <%= cipher_suite %>
+    <%- end -%>
+    <%- end -%>
+    <%- if @winlogbeat_config['output']['redis']['ssl']['curve_types'] != nil -%>
+    curve_types:
+    <%- @winlogbeat_config['output']['redis']['ssl']['curve_types'].each do |curve_type| -%>
+      - <%= curve_type %>
+    <%- end -%>
+    <%- end -%>
+  <%- end -%>
+<%- end -%>
+<%- if @winlogbeat_config['output']['file'] != nil -%>
+#------------------------------- File output ----------------------------------
+output.file:
+  <%- if @winlogbeat_config['output']['file']['enabled'] != nil -%>
+  enabled: <%= @winlogbeat_config['output']['file']['enabled'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['file']['path'] != nil -%>
+  path: "<%= @winlogbeat_config['output']['file']['path'] %>"
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['file']['filename'] != nil -%>
+  filename: <%= @winlogbeat_config['output']['file']['filename'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['file']['rotate_every_kb'] != nil -%>
+  rotate_every_kb: <%= @winlogbeat_config['output']['file']['rotate_every_kb'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['file']['number_of_files'] != nil -%>
+  number_of_files: <%= @winlogbeat_config['output']['file']['number_of_files'] %>
+  <%- end -%>
+<%- end -%>
+<%- if @winlogbeat_config['output']['console'] != nil -%>
+#-------------------------- Console output ------------------------------------
+output.console:
+  <%- if @winlogbeat_config['output']['console']['enabled'] != nil -%>
+  enabled: <%= @winlogbeat_config['output']['console']['enabled'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['console']['pretty'] != nil -%>
+  pretty: <%= @winlogbeat_config['output']['console']['pretty'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['output']['console']['bulk_max_size'] != nil -%>
+  bulk_max_size: <%= @winlogbeat_config['output']['console']['bulk_max_size'] %>
+  <%- end -%>
+<%- end -%>
+
+#================================= Paths ======================================
+
+# The home path for the winlogbeat installation. This is the default base path
+# for all other path settings and for miscellaneous files that come with the
+# distribution (for example, the sample dashboards).
+# If not set by a CLI flag or in the configuration file, the default for the
+# home path is the location of the binary.
+#path.home:
+
+# The configuration path for the winlogbeat installation. This is the default
+# base path for configuration files, including the main YAML configuration file
+# and the Elasticsearch template file. If not set by a CLI flag or in the
+# configuration file, the default for the configuration path is the home path.
+#path.config: ${path.home}
+
+# The data path for the winlogbeat installation. This is the default base path
+# for all the files in which winlogbeat needs to store its data. If not set by a
+# CLI flag or in the configuration file, the default for the data path is a data
+# subdirectory inside the home path.
+#path.data: ${path.home}/data
+
+# The logs path for a winlogbeat installation. This is the default location for
+# the Beat's log files. If not set by a CLI flag or in the configuration file,
+# the default for the logs path is a logs subdirectory inside the home path.
+#path.logs: ${path.home}/logs
+
+#============================== Dashboards =====================================
+# These settings control loading the sample dashboards to the Kibana index. Loading
+# the dashboards is disabled by default and can be enabled either by setting the
+# options here, or by using the `-setup` CLI flag.
+#dashboards.enabled: false
+
+# The URL from where to download the dashboards archive. By default this URL
+# has a value which is computed based on the Beat name and version. For released
+# versions, this URL points to the dashboard archive on the artifacts.elastic.co
+# website.
+#dashboards.url:
+
+# The directory from where to read the dashboards. It is used instead of the URL
+# when it has a value.
+#dashboards.directory:
+
+# The file archive (zip file) from where to read the dashboards. It is used instead
+# of the URL when it has a value.
+#dashboards.file:
+
+# If this option is enabled, the snapshot URL is used instead of the default URL.
+#dashboards.snapshot: false
+
+# The URL from where to download the snapshot version of the dashboards. By default
+# this has a value which is computed based on the Beat name and version.
+#dashboards.snapshot_url
+
+# In case the archive contains the dashboards from multiple Beats, this lets you
+# select which one to load. You can load all the dashboards in the archive by
+# setting this to the empty string.
+#dashboards.beat: winlogbeat
+
+# The name of the Kibana index to use for setting the configuration. Default is ".kibana"
+#dashboards.kibana_index: .kibana
+
+# The Elasticsearch index name. This overwrites the index name defined in the
+# dashboards and index pattern. Example: testbeat-*
+#dashboards.index:
+
+#================================ Logging ======================================
+<%- if @winlogbeat_config['logging']['level'] != nil -%>
+logging.level: <%= @winlogbeat_config['logging']['level'] %>
+<%- end -%>
+<%- if @winlogbeat_config['logging']['selectors'] != nil && @winlogbeat_config['logging']['selectors'].length > 0 -%>
+logging.selectors:
+<%- @winlogbeat_config['logging']['selectors'].each do |selector| -%>
+  - <%= selector %>
+<%- end -%>
+<%- end -%>
+<%- if @winlogbeat_config['logging']['to_syslog'] != nil -%>
+logging.to_syslog: <%= @winlogbeat_config['logging']['to_syslog'] %>
+<%- end -%>
+<%- if @winlogbeat_config['logging']['metrics'] != nil -%>
+<%- if @winlogbeat_config['logging']['metrics']['enabled'] != nil -%>
+logging.metrics.enabled: <%= @winlogbeat_config['logging']['metrics']['enabled'] %>
+<%- end -%>
+<%- if @winlogbeat_config['logging']['metrics']['period'] != nil -%>
+logging.metrics.period: <%= @winlogbeat_config['logging']['metrics']['period'] %>
+<%- end -%>
+<%- end -%>
+<%- if @winlogbeat_config['logging']['to_files'] != nil -%>
+logging.to_files: <%= @winlogbeat_config['logging']['to_files'] %>
+<%- end -%>
+<%- if @winlogbeat_config['logging']['files'] != nil -%>
+logging.files:
+  <%- if @winlogbeat_config['logging']['files']['path'] != nil -%>
+  path: <%= @winlogbeat_config['logging']['files']['path'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['logging']['files']['name'] != nil -%>
+  name: <%= @winlogbeat_config['logging']['files']['name'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['logging']['files']['rotateeverybytes'] != nil -%>
+  rotateeverybytes: <%= @winlogbeat_config['logging']['files']['rotateeverybytes'] %>
+  <%- end -%>
+  <%- if @winlogbeat_config['logging']['files']['keepfiles'] != nil -%>
+  keepfiles: <%= @winlogbeat_config['logging']['files']['keepfiles'] %>
+  <%- end -%>
+<%- end -%>
