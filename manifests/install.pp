@@ -9,7 +9,7 @@ class winlogbeat::install {
   $zip_file = join([$winlogbeat::tmp_dir, "${filename}.zip"], '/')
   $install_folder = join([$winlogbeat::install_dir, $foldername], '/')
   $version_file = join([$install_folder, $filename], '/')
-  $app_file = join([$install_folder, 'winlogbeat.exe'], '/')
+  $app_file = join([$foldername, 'winlogbeat.exe'], '/')
 
   Exec {
     provider => powershell,
