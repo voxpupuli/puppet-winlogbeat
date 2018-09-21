@@ -21,7 +21,7 @@ class winlogbeat::config {
     'Windows' : {
       $cmd_install_dir = regsubst($winlogbeat::install_dir, '/', '\\', 'G')
       $winlogbeat_path = join([$cmd_install_dir, 'Winlogbeat', 'winlogbeat.exe'], '\\')
-      if $winlogbeat::real_version == '6' {
+      if $winlogbeat::major_version == '6' or $winlogbeat::real_version == '6' {
         $validate_cmd = "\"${winlogbeat_path}\" test config -c \"%\""
       }
       else {
