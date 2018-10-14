@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v0.2.2](https://github.com/voxpupuli/puppet-winlogbeat/tree/v0.2.2) (2018-10-14)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-winlogbeat/compare/v0.2.1...v0.2.2)
+
+**Merged pull requests:**
+
+- modulesync 2.2.0 and allow puppet 6.x [\#22](https://github.com/voxpupuli/puppet-winlogbeat/pull/22) ([bastelfreak](https://github.com/bastelfreak))
+- allow puppetlabs/stdlib 5.x [\#19](https://github.com/voxpupuli/puppet-winlogbeat/pull/19) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v0.2.1](https://github.com/voxpupuli/puppet-winlogbeat/tree/v0.2.1) (2018-08-18)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-winlogbeat/compare/v0.2.0...v0.2.1)
