@@ -27,30 +27,30 @@
 # @param event_logs_merge [Boolean] Whether $event_logs should merge all hiera sources, or use simple automatic parameter lookup
 
 class winlogbeat (
-  $major_version        = undef,
-  String $package_ensure       = $winlogbeat::params::package_ensure,
-  $service_ensure       = $winlogbeat::params::service_ensure,
-  $service_enable       = $winlogbeat::params::service_enable,
-  $service_provider     = $winlogbeat::params::service_provider,
-  String $registry_file        = $winlogbeat::params::registry_file,
-  $config_file          = $winlogbeat::params::config_file,
-  Hash $outputs              = $winlogbeat::params::outputs,
-  $shipper              = $winlogbeat::params::shipper,
-  Hash $logging              = $winlogbeat::params::logging,
-  $run_options          = $winlogbeat::params::run_options,
-  $conf_template        = undef,
-  $download_url         = undef,
-  $install_dir          = $winlogbeat::params::install_dir,
-  $tmp_dir              = $winlogbeat::params::tmp_dir,
+  $major_version            = undef,
+  String[1] $package_ensure = $winlogbeat::params::package_ensure,
+  $service_ensure           = $winlogbeat::params::service_ensure,
+  $service_enable           = $winlogbeat::params::service_enable,
+  $service_provider         = $winlogbeat::params::service_provider,
+  String[1] $registry_file  = $winlogbeat::params::registry_file,
+  $config_file              = $winlogbeat::params::config_file,
+  Hash $outputs             = $winlogbeat::params::outputs,
+  $shipper                  = $winlogbeat::params::shipper,
+  Hash $logging             = $winlogbeat::params::logging,
+  $run_options              = $winlogbeat::params::run_options,
+  $conf_template            = undef,
+  $download_url             = undef,
+  $install_dir              = $winlogbeat::params::install_dir,
+  $tmp_dir                  = $winlogbeat::params::tmp_dir,
   #### v5 only ####
-  $use_generic_template = $winlogbeat::params::use_generic_template,
-  $beat_name            = $winlogbeat::params::beat_name,
-  $tags                 = $winlogbeat::params::tags,
-  $queue_size           = $winlogbeat::params::queue_size,
-  $max_procs            = $winlogbeat::params::max_procs,
-  $fields               = $winlogbeat::params::fields,
-  $fields_under_root    = $winlogbeat::params::fields_under_root,
-  $metrics              = undef,
+  $use_generic_template     = $winlogbeat::params::use_generic_template,
+  $beat_name                = $winlogbeat::params::beat_name,
+  $tags                     = $winlogbeat::params::tags,
+  $queue_size               = $winlogbeat::params::queue_size,
+  $max_procs                = $winlogbeat::params::max_procs,
+  $fields                   = $winlogbeat::params::fields,
+  $fields_under_root        = $winlogbeat::params::fields_under_root,
+  $metrics                  = undef,
   #### End v5 only ####
   Hash $event_logs           = {},
   Boolean $event_logs_merge     = false,
@@ -98,7 +98,7 @@ class winlogbeat (
     warning('You\'ve specified a non-standard config_file location - winlogbeat may fail to start unless you\'re doing something to fix this')
   }
 
-   if(!empty($proxy_address)){
+  if(!empty($proxy_address)){
     validate_re($proxy_address, ['^(http(?:s)?\:\/\/[a-zA-Z0-9]+(?:(?:\.|\-)[a-zA-Z0-9]+)+(?:\:\d+)?(?:\/[\w\-]+)*(?:\/?|\/\w+\.[a-zA-Z]{2,4}(?:\?[\w]+\=[\w\-]+)?)?(?:\&[\w]+\=[\w\-]+)*)$'], 'ERROR: You must enter a proxy url in a valid format i.e. http://proxy.net:3128')
   }
 
