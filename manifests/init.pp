@@ -108,8 +108,8 @@ class winlogbeat (
   }
 
   anchor { 'winlogbeat::begin': }
-  -> class { '::winlogbeat::install': }
-  -> class { '::winlogbeat::config': }
-  -> class { '::winlogbeat::service': }
+  -> class { 'winlogbeat::install': }
+  -> class { 'winlogbeat::config': }
+  -> class { 'winlogbeat::service': }
   -> anchor { 'winlogbeat::end': }
 }
