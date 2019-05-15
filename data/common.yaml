@@ -6,7 +6,7 @@ winlogbeat::spool_size: 2048
 winlogbeat::idle_timeout: '5s'
 winlogbeat::publish_async: false
 winlogbeat::shutdown_timeout: '0'
-winlogbeat::beat_name: "%{lookup($::fqdn)}"
+winlogbeat::beat_name: "%{facts.fqdn}"
 winlogbeat::tags: []
 winlogbeat::queue_size: 1000
 winlogbeat::fields: {}
@@ -32,14 +32,14 @@ winlogbeat::max_procs: null
 winlogbeat::service_provider: null
 winlogbeat::config_file_mode: '0644'
 winlogbeat::config_dir_mode: '0755'
-winlogbeat::kernel_fail_message: "%{lookup($::kernel)} is not supported by winlogbeat."
+winlogbeat::kernel_fail_message: "%{facts.kernel} is not supported by winlogbeat."
 winlogbeat::conf_template: 'winlogbeat/pure_hash.yml.epp'
 winlogbeat::config_file_owner: 'Administrator'
 winlogbeat::config_file_group: null
 winlogbeat::config_dir_owner: 'Administrator'
 winlogbeat::config_dir_group: null
-winlogbeat::config_file: "C:/Program Files/%{lookup($winlogbeat::folder_name)}/winlogbeat.yml"
-winlogbeat::registry_file: 'C:/ProgramData/%{lookup($winlogbeat::folder_name)}/registry'
+winlogbeat::config_file: "C:/Program Files/%{lookup('winlogbeat::folder_name')}/winlogbeat.yml"
+winlogbeat::registry_file: 'C:/ProgramData/%{lookup('winlogbeat::folder_name')}/registry'
 winlogbeat::install_dir: 'C:/Program Files'
 winlogbeat::tmp_dir: 'C:/Windows/Temp'
 winlogbeat::folder_name: 'Winlogbeat'
