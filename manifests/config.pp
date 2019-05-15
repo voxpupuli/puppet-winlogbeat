@@ -6,6 +6,8 @@
 
 class winlogbeat::config {
   $major_version = regsubst($winlogbeat::package_ensure, '^(\d)\..*', '\1')
+  $cmd_install_dir = regsubst($winlogbeat::install_dir, '/', '\\', 'G')
+  $winlogbeat_path = join([$cmd_install_dir, 'winlogbeat', 'winlogbeat.exe'], '\\')
 
   if versioncmp($major_version, '6') >= 0 {
     $winlogbeat_config_temp = delete_undef_values({
@@ -70,15 +72,13 @@ class winlogbeat::config {
     $skip_validation = false
   }
 
-  $cmd_install_dir = regsubst($winlogbeat::install_dir, '/', '\\', 'G')
-  $winlogbeat_path = join([$cmd_install_dir, 'winlogbeat', 'winlogbeat.exe'], '\\')
-
   
   $validate_cmd = ($winlogbeat::disable_config_test or $skip_validation) ? {
     true    => undef,
     default => $cmd_test_winlogbeat,
   }
 
+  $winlogbeat_config_yaml= $winlogbeat_config.to_yaml()
   file {'winlogbeat.yml':
     ensure       => $winlogbeat::file_ensure,
     path         => $winlogbeat::config_file,
