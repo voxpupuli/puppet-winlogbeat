@@ -39,7 +39,7 @@ winlogbeat::config_file_group: null
 winlogbeat::config_dir_owner: 'Administrator'
 winlogbeat::config_dir_group: null
 winlogbeat::config_file: "C:/Program Files/%{lookup('winlogbeat::folder_name')}/winlogbeat.yml"
-winlogbeat::registry_file: 'C:/ProgramData/%{lookup('winlogbeat::folder_name')}/registry'
+winlogbeat::registry_file: "C:/ProgramData/%{lookup('winlogbeat::folder_name')}/registry"
 winlogbeat::install_dir: 'C:/Program Files'
 winlogbeat::tmp_dir: 'C:/Windows/Temp'
 winlogbeat::folder_name: 'Winlogbeat'
