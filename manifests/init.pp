@@ -62,7 +62,7 @@ class winlogbeat (
   Hash    $logging,
   Hash    $run_options,
   String  $conf_template,
-  Optional[String] $download_url,
+  Optional[Stdlib::Filesource] $download_url,
   Boolean $manage_download_file,
   Optional[String] $winlogbeat_zip_path,
   Optional[String]  $install_dir,
