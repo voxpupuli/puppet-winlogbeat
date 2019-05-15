@@ -36,7 +36,7 @@ class winlogbeat::config {
       $winlogbeat_config = $winlogbeat_config_temp
     }
     
-    $cmd_test_winlogbeat = "\"${winlogbeat_path}\" -N config test -c \"%\""
+    $cmd_test_winlogbeat = "\"${winlogbeat_path}\" test config -c \"%\""
   } else {
     $winlogbeat_config = delete_undef_values({
       'shutdown_timeout'  => $winlogbeat::shutdown_timeout,
