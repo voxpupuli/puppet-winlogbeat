@@ -30,10 +30,11 @@ class winlogbeat::config {
     # Add the 'xpack' section if supported (version >= 6.1.0) and not undef
     if $winlogbeat::xpack and versioncmp($winlogbeat::package_ensure, '6.1.0') >= 0 {
       $winlogbeat_config = deep_merge($winlogbeat_config_temp, {'xpack' => $winlogbeat::xpack})
-    }
-    else {
+    } else {
       $winlogbeat_config = $winlogbeat_config_temp
     }
+    
+    $cmd_test_winlogbeat = "\"${winlogbeat_path}\" -N config test -c \"%\""
   } else {
     $winlogbeat_config = delete_undef_values({
       'shutdown_timeout'  => $winlogbeat::shutdown_timeout,
@@ -56,6 +57,8 @@ class winlogbeat::config {
       'runoptions'        => $winlogbeat::run_options,
       'processors'        => $winlogbeat::processors,
     })
+    
+    $cmd_test_winlogbeat = "\"${winlogbeat_path}\" -N -configtest -c \"%\""
   }
 
   if ($facts['winlogbeat_version']) {
@@ -70,9 +73,10 @@ class winlogbeat::config {
   $cmd_install_dir = regsubst($winlogbeat::install_dir, '/', '\\', 'G')
   $winlogbeat_path = join([$cmd_install_dir, 'winlogbeat', 'winlogbeat.exe'], '\\')
 
+  
   $validate_cmd = ($winlogbeat::disable_config_test or $skip_validation) ? {
     true    => undef,
-    default => "\"${winlogbeat_path}\" -N -configtest -c \"%\"",
+    default => $cmd_test_winlogbeat,
   }
 
   file {'winlogbeat.yml':

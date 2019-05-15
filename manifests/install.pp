@@ -48,12 +48,6 @@ class winlogbeat::install {
   
   notice("\$sh=New-Object -COM Shell.Application;\$sh.namespace((Convert-Path '${winlogbeat::install_dir}')).Copyhere(\$sh.namespace((Convert-Path '${zip_file}')).items(), 16)")
 
-  # Clean up after ourselves
-  #file { $zip_file:
-  #  ensure  => absent,
-  #  backup  => false,
-  #  require => Exec["unzip ${filename}"],
-  #}
 
   # You can't remove the old dir while the service has files locked...
   exec { "stop service ${filename}":
