@@ -40,7 +40,7 @@ class winlogbeat::install {
     ],
   }
   
-  notify("\$sh=New-Object -COM Shell.Application;\$sh.namespace((Convert-Path '${winlogbeat::install_dir}')).Copyhere(\$sh.namespace((Convert-Path '${zip_file}')).items(), 16)")
+  notice("\$sh=New-Object -COM Shell.Application;\$sh.namespace((Convert-Path '${winlogbeat::install_dir}')).Copyhere(\$sh.namespace((Convert-Path '${zip_file}')).items(), 16)")
 
   # Clean up after ourselves
   #file { $zip_file:
@@ -63,7 +63,7 @@ class winlogbeat::install {
     require => Exec["stop service ${filename}"],
   }
   
-  notify("Remove-Item '${install_folder}' -Recurse -Force -ErrorAction SilentlyContinue;Rename-Item '${winlogbeat::install_dir}/${filename}' '${install_folder}'")
+  notice("Remove-Item '${install_folder}' -Recurse -Force -ErrorAction SilentlyContinue;Rename-Item '${winlogbeat::install_dir}/${filename}' '${install_folder}'")
 
   exec { "mark ${filename}":
     command => "New-Item '${version_file}' -ItemType file",
