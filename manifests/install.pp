@@ -23,21 +23,27 @@ class winlogbeat::install {
   # However, this requires 7zip, which archive can install via chocolatey:
   # https://github.com/voxpupuli/puppet-archive/blob/master/manifests/init.pp#L31
   # I'm not choosing to impose those dependencies on anyone at this time...
-  archive { $zip_file:
-    source       => $winlogbeat::real_download_url,
-    cleanup      => false,
-    creates      => $version_file,
-    proxy_server => $winlogbeat::proxy_address,
+  if ($winlogbeat::proxy_address) {
+      archive { $zip_file:
+        source       => $winlogbeat::real_download_url,
+        cleanup      => false,
+        creates      => $version_file,
+        proxy_server => $winlogbeat::proxy_address,
+        before       => Exec["unzip ${filename}"],
+      }
+  } else {
+      # Use file when source is puppet:/// because of archive break zip file
+      file { $zip_file:
+        source       => $winlogbeat::real_download_url,
+        before       => Exec["unzip ${filename}"],
+      }
   }
 
 
   exec { "unzip ${filename}":
     command => "\$sh=New-Object -COM Shell.Application;\$sh.namespace((Convert-Path '${winlogbeat::install_dir}')).Copyhere(\$sh.namespace((Convert-Path '${zip_file}')).items(), 16)", # lint:ignore:140chars
     creates => $version_file,
-    require => [
-      File[$winlogbeat::install_dir],
-      Archive[$zip_file],
-    ],
+    require => File[$winlogbeat::install_dir],
   }
   
   notice("\$sh=New-Object -COM Shell.Application;\$sh.namespace((Convert-Path '${winlogbeat::install_dir}')).Copyhere(\$sh.namespace((Convert-Path '${zip_file}')).items(), 16)")
