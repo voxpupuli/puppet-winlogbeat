@@ -1,0 +1,51 @@
+---
+# User settings
+winlogbeat::service_ensure: 'running'
+winlogbeat::service_enable: true
+winlogbeat::spool_size: 2048
+winlogbeat::idle_timeout: '5s'
+winlogbeat::publish_async: false
+winlogbeat::shutdown_timeout: '0'
+winlogbeat::beat_name: "%{lookup($::fqdn)}"
+winlogbeat::tags: []
+winlogbeat::queue_size: 1000
+winlogbeat::fields: {}
+winlogbeat::fields_under_root: false
+winlogbeat::outputs: {}
+winlogbeat::logging: {}
+winlogbeat::run_options: {}
+winlogbeat::disable_config_test: false
+winlogbeat::package_ensure: '6.7.2'
+winlogbeat::event_logs: []
+winlogbeat::setup: {}
+winlogbeat::queue: {}
+winlogbeat::processors: {}
+winlogbeat::registry_flush: null
+winlogbeat::manage_download_file: true
+winlogbeat::download_url: null
+winlogbeat::winlogbeat_zip_path: null
+winlogbeat::proxy_address: null
+winlogbeat::xpack: null
+winlogbeat::max_procs: null
+
+# Internal module
+winlogbeat::service_provider: null
+winlogbeat::config_file_mode: '0644'
+winlogbeat::config_dir_mode: '0755'
+winlogbeat::kernel_fail_message: "%{lookup($::kernel)} is not supported by winlogbeat."
+winlogbeat::conf_template: 'winlogbeat/pure_hash.yml.epp'
+winlogbeat::config_file_owner: 'Administrator'
+winlogbeat::config_file_group: null
+winlogbeat::config_dir_owner: 'Administrator'
+winlogbeat::config_dir_group: null
+winlogbeat::config_file: "C:/Program Files/%{lookup($winlogbeat::folder_name)}/winlogbeat.yml"
+winlogbeat::registry_file: 'C:/ProgramData/%{lookup($winlogbeat::folder_name)}/registry'
+winlogbeat::install_dir: 'C:/Program Files'
+winlogbeat::tmp_dir: 'C:/Windows/Temp'
+winlogbeat::folder_name: 'Winlogbeat'
+
+lookup_options:
+  winlogbeat::event_logs:
+    merge:
+     strategy: 'deep'
+     merge_hash_arrays: true

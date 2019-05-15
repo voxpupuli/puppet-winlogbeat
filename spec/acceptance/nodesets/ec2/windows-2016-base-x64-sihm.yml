@@ -9,18 +9,19 @@
 # see: https://github.com/puppetlabs/beaker/blob/master/docs/how_to/hypervisors/ec2.md
 #
 HOSTS:
-  windows-2008R2-serverstandard-x64:
-    platform: windows-server-amd64
+  windows-2016-base-x64:
+    platform: windows-2016-64
     hypervisor: ec2
     # refers to image_tempaltes.yaml AMI[vmname] entry:
-    vmname: windows-2016-base-eu-central-1
+    vmname: windows-2016-base-eu-west-1
     # refers to image_tempaltes.yaml entry inside AMI[vmname][:image]:
     snapshot: aio
     # t2.micro is free tier eligible (https://aws.amazon.com/en/free/):
     amisize: t2.micro
     # required so that beaker sanitizes sshd_config and root authorized_keys:
     user: ec2-user
+    subnet_id: subnet-098d092357089e460
+    vpc_id: vpc-0bf7145b4474b5335
 CONFIG:
   type: aio
-  :ec2_yaml: spec/acceptance/nodesets/ec2/image_templates.yaml
-
+  :ec2_yaml: spec/acceptance/nodesets/ec2/image_templates_sihm.yaml

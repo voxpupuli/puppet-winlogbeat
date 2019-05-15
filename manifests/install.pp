@@ -1,13 +1,12 @@
+# winlogbeat::install
+#
+# Manage the installation of Winlogbeat
+#
+# @summary A private class to manage the installation of Winlogbeat
 class winlogbeat::install {
-  # I'd like to use chocolatey to do this install, but the package for chocolatey is
-  # failing for updates and seems rather unpredictable at the moment. We may revisit
-  # that in the future as it would greatly simplify this code and basically reduce it to
-  # one package resource with type => chocolatey....
-
-  $filename = regsubst($winlogbeat::real_download_url, '^https.*\/([^\/]+)\.[^.].*', '\1')
-  $foldername = 'Winlogbeat'
+  $filename = regsubst($winlogbeat::real_download_url, '.*\/([^\/]+)\.zip$', '\1')
   $zip_file = join([$winlogbeat::tmp_dir, "${filename}.zip"], '/')
-  $install_folder = join([$winlogbeat::install_dir, $foldername], '/')
+  $install_folder = join([$winlogbeat::install_dir, $winlogbeat::folder_name], '/')
   $version_file = join([$install_folder, $filename], '/')
 
   Exec {
@@ -31,8 +30,9 @@ class winlogbeat::install {
     proxy_server => $winlogbeat::proxy_address,
   }
 
+
   exec { "unzip ${filename}":
-    command => "\$sh=New-Object -COM Shell.Application;\$sh.namespace((Convert-Path '${winlogbeat::install_dir}')).Copyhere(\$sh.namespace((Convert-Path '${zip_file}')).items(), 16)",
+    command => "\$sh=New-Object -COM Shell.Application;\$sh.namespace((Convert-Path '${winlogbeat::install_dir}')).Copyhere(\$sh.namespace((Convert-Path '${zip_file}')).items(), 16)", # lint:ignore:140chars
     creates => $version_file,
     require => [
       File[$winlogbeat::install_dir],
@@ -56,7 +56,7 @@ class winlogbeat::install {
   }
 
   exec { "rename ${filename}":
-    command => "Remove-Item '${install_folder}' -Recurse -Force -ErrorAction SilentlyContinue; Rename-Item '${winlogbeat::install_dir}/${filename}' '${install_folder}'",
+    command => "Remove-Item '${install_folder}' -Recurse -Force -ErrorAction SilentlyContinue;Rename-Item '${winlogbeat::install_dir}/${filename}' '${install_folder}'", # lint:ignore:140chars
     creates => $version_file,
     require => Exec["stop service ${filename}"],
   }
@@ -72,5 +72,6 @@ class winlogbeat::install {
     command     => './install-service-winlogbeat.ps1',
     refreshonly => true,
     subscribe   => Exec["mark ${filename}"],
+    notify      => Class['winlogbeat::service'],
   }
 }
