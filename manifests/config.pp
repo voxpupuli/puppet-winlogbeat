@@ -35,7 +35,7 @@ class winlogbeat::config {
     } else {
       $winlogbeat_config = $winlogbeat_config_temp
     }
-    
+
     $cmd_test_winlogbeat = "\"${winlogbeat_path}\" test config -c \"%\""
   } else {
     $winlogbeat_config = delete_undef_values({
@@ -59,7 +59,7 @@ class winlogbeat::config {
       'runoptions'        => $winlogbeat::run_options,
       'processors'        => $winlogbeat::processors,
     })
-    
+
     $cmd_test_winlogbeat = "\"${winlogbeat_path}\" -N -configtest -c \"%\""
   }
 
@@ -72,7 +72,7 @@ class winlogbeat::config {
     $skip_validation = false
   }
 
-  
+
   $validate_cmd = ($winlogbeat::disable_config_test or $skip_validation) ? {
     true    => undef,
     default => $cmd_test_winlogbeat,

@@ -34,8 +34,8 @@ class winlogbeat::install {
   } else {
       # Use file when source is puppet:/// because of archive break zip file
       file { $zip_file:
-        source       => $winlogbeat::real_download_url,
-        before       => Exec["unzip ${filename}"],
+        source => $winlogbeat::real_download_url,
+        before => Exec["unzip ${filename}"],
       }
   }
 
@@ -45,8 +45,6 @@ class winlogbeat::install {
     creates => $version_file,
     require => File[$winlogbeat::install_dir],
   }
-  
-  notice("\$sh=New-Object -COM Shell.Application;\$sh.namespace((Convert-Path '${winlogbeat::install_dir}')).Copyhere(\$sh.namespace((Convert-Path '${zip_file}')).items(), 16)")
 
 
   # You can't remove the old dir while the service has files locked...
@@ -62,8 +60,7 @@ class winlogbeat::install {
     creates => $version_file,
     require => Exec["stop service ${filename}"],
   }
-  
-  notice("Remove-Item '${install_folder}' -Recurse -Force -ErrorAction SilentlyContinue;Rename-Item '${winlogbeat::install_dir}/${filename}' '${install_folder}'")
+
 
   exec { "mark ${filename}":
     command => "New-Item '${version_file}' -ItemType file",
