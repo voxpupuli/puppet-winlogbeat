@@ -1,2 +1,2 @@
 ### Winlogbeat configuration managed by Puppet ###
-<%= $winlogbeat_config_yaml %>
+<%= $winlogbeat::config::winlogbeat_config_yaml %>

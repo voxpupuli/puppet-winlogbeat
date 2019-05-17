@@ -78,11 +78,11 @@ class winlogbeat::config {
     default => $cmd_test_winlogbeat,
   }
 
-  $winlogbeat_config_yaml= $winlogbeat_config.to_yaml()
+  $winlogbeat_config_yaml = $winlogbeat_config.to_yaml()
   file {'winlogbeat.yml':
     ensure       => $winlogbeat::file_ensure,
     path         => $winlogbeat::config_file,
-    content      => template($winlogbeat::conf_template),
+    content      => epp($winlogbeat::conf_template),
     validate_cmd => $validate_cmd,
     notify       => Service['winlogbeat'],
   }
