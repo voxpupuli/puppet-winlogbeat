@@ -20,15 +20,19 @@
 # @param publish_async [Boolean] If set to true winlogbeat will publish while preparing the next batch of lines to send (defualt: false)
 # @param registry_file [String] The registry file used to store positions, absolute or relative to working directory (default .winlogbeat)
 # @param registry_flush [String] The timeout value that controls when registry entries are written to disk (default: 0s)
-# @param config_dir [String] The directory where prospectors should be defined (default: /etc/winlogbeat/conf.d)
 # @param config_dir_mode [String] The unix permissions mode set on the configuration directory (default: 0755)
+# @param config_dir_owner [String] The owner set on the configuration directory (default: Administrator)
+# @param config_dir_group [String] The group set on the configuration directory (default: Administrators)
 # @param config_file_mode [String] The unix permissions mode set on configuration files (default: 0644)
-# @param purge_conf_dir [Boolean] Should files in the prospector configuration directory not managed by puppet be automatically purged
+# @param config_file_owner [String] The owner set on configuration files (default: Administrator)
+# @param config_file_group [String] The group set on configuration files (default: Administrators)
 # @param outputs [Hash] Will be converted to YAML for the required outputs section of the configuration (see documentation, and above)
 # @param logging [Hash] Will be converted to YAML to create the optional logging section of the winlogbeat config (see documentation)
+# @param run_options [Hash] Will be converted to YAML to create optionnal run options section of the winlogbeat config
 # @param conf_template [String] The configuration template to use to generate the main winlogbeat.yml config file
 # @param download_url [String] The URL of the zip file that should be downloaded to install winlogbeat (windows only)
 # @param install_dir [String] Where winlogbeat should be installed (windows only)
+# @param folder_name [String] The folder name to use to install winlogbeat (default: Winlogbeat)
 # @param tmp_dir [String] Where winlogbeat should be temporarily downloaded to so it can be installed (windows only)
 # @param shutdown_timeout [String] How long winlogbeat waits on shutdown for the publisher to finish sending events
 # @param beat_name [String] The name of the beat shipper (default: hostname)
@@ -38,9 +42,12 @@
 # @param fields [Hash] Optional fields that should be added to each event output
 # @param fields_under_root [Boolean] If set to true, custom fields are stored in the top level instead of under fields
 # @param processors [Array] Processors that will be added. Commonly used to create processors using hiera.
+# @param disable_config_test [Boolean] Disable the configuration testing before to restart Winlogbeat servie (Default: false)
 # @param setup [Hash] setup that will be created. Commonly used to create setup using hiera
-# proxy_address [String] Proxy server to use for downloading files
+# @param proxy_address [String] Proxy server to use for downloading files
 # @param xpack [Hash] Configuration items to export internal stats to a monitoring Elasticsearch cluster
+# @param queue [Hash] Will be converted to YAML to create the optional queue section of the winlogbeat config (see documentation)
+# @param event_logs [Array[Hash]] Will be converted to Yaml to create the event_logs section of the winlogbeat
 class winlogbeat (
   String  $package_ensure,
   Stdlib::Ensure::Service $service_ensure,
@@ -63,8 +70,6 @@ class winlogbeat (
   Hash    $run_options,
   String  $conf_template,
   Optional[String] $download_url,
-  Boolean $manage_download_file,
-  Optional[String] $winlogbeat_zip_path,
   Optional[String]  $install_dir,
   String $folder_name,
   String  $tmp_dir,
