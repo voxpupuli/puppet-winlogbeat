@@ -11,7 +11,6 @@ winlogbeat::tags: []
 winlogbeat::queue_size: 1000
 winlogbeat::fields: {}
 winlogbeat::fields_under_root: false
-winlogbeat::outputs: {}
 winlogbeat::logging: {}
 winlogbeat::run_options: {}
 winlogbeat::disable_config_test: false
