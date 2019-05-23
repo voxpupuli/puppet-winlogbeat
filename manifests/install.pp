@@ -74,6 +74,5 @@ class winlogbeat::install {
     refreshonly => true,
     subscribe   => Exec["mark ${filename}"],
     notify      => Class['winlogbeat::service'],
-    require     => Exec["unzip ${filename}"]
   }
 }
