@@ -21,11 +21,15 @@ class winlogbeat::config {
     'Windows' : {
       $cmd_install_dir = regsubst($winlogbeat::install_dir, '/', '\\', 'G')
       $winlogbeat_path = join([$cmd_install_dir, 'Winlogbeat', 'winlogbeat.exe'], '\\')
+      $validate_cmd    = $winlogbeat::major_version ? {
+        '7'     => "\"${winlogbeat_path}\" test config -c \"%\"",
+        default => "\"${winlogbeat_path}\" -N -configtest -c \"%\"",
+      }
       file {'winlogbeat.yml':
         ensure       => file,
         path         => $winlogbeat::config_file,
         content      => template($winlogbeat::real_conf_template),
-        validate_cmd => "\"${winlogbeat_path}\" -N -configtest -c \"%\"",
+        validate_cmd => $validate_cmd,
         notify       => Service['winlogbeat'],
       }
     } # end Windows
