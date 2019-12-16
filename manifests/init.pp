@@ -72,7 +72,7 @@ class winlogbeat (
   if $conf_template != undef {
     $real_conf_template = $conf_template
   } elsif $real_version == '1' {
-    if versioncmp('1.9.1', $::rubyversion) > 0 {
+    if versioncmp('1.9.1', $facts['ruby']['version']) > 0 {
       $real_conf_template = "${module_name}/winlogbeat1.yml.ruby18.erb"
     } else {
       $real_conf_template = "${module_name}/winlogbeat1.yml.erb"
