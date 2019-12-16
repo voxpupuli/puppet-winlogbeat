@@ -72,7 +72,7 @@ class winlogbeat (
   if $conf_template != undef {
     $real_conf_template = $conf_template
   } elsif $real_version == '1' {
-    if versioncmp('1.9.1', $::rubyversion) > 0 {
+    if versioncmp('1.9.1', $facts['ruby']['version']) > 0 {
       $real_conf_template = "${module_name}/winlogbeat1.yml.ruby18.erb"
     } else {
       $real_conf_template = "${module_name}/winlogbeat1.yml.erb"
@@ -106,10 +106,11 @@ class winlogbeat (
   if(!empty($proxy_address)){
     validate_re($proxy_address, ['^(http(?:s)?\:\/\/[a-zA-Z0-9]+(?:(?:\.|\-)[a-zA-Z0-9]+)+(?:\:\d+)?(?:\/[\w\-]+)*(?:\/?|\/\w+\.[a-zA-Z]{2,4}(?:\?[\w]+\=[\w\-]+)?)?(?:\&[\w]+\=[\w\-]+)*)$'], 'ERROR: You must enter a proxy url in a valid format i.e. http://proxy.net:3128')
   }
+  contain winlogbeat::install
+  contain winlogbeat::config
+  contain winlogbeat::service
 
-  anchor { 'winlogbeat::begin': }
-  -> class { 'winlogbeat::install': }
-  -> class { 'winlogbeat::config': }
-  -> class { 'winlogbeat::service': }
-  -> anchor { 'winlogbeat::end': }
+  Class['winlogbeat::install']
+  -> Class['winlogbeat::config']
+  -> Class['winlogbeat::service']
 }

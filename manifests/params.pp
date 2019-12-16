@@ -1,7 +1,7 @@
 class winlogbeat::params {
   $service_ensure       = running
   $service_enable       = true
-  $beat_name            = $::fqdn
+  $beat_name            = $facts['networking']['fqdn']
   $tags                 = []
   $queue_size           = 1000
   $max_procs            = undef
@@ -29,10 +29,10 @@ class winlogbeat::params {
       $install_dir      = 'C:/Program Files'
       $tmp_dir          = 'C:/Windows/Temp'
       $service_provider = undef
-      $url_arch         = $::architecture ? {
+      $url_arch         = $facts['os']['architecture'] ? {
         'x86'   => 'x86',
         'x64'   => 'x86_64',
-        default => fail("${::architecture} is not supported by winlogbeat."),
+        default => fail("${facts['os']['architecture']} is not supported by winlogbeat."),
       }
     }
 
