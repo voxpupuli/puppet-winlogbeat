@@ -18,9 +18,9 @@ class winlogbeat::config {
   })
 
   if versioncmp($winlogbeat::real_version, '6') >= 0 {
-    $real_validate_cmd = 'test config'
+    $validate_cmd = 'test config'
   } else {
-    $real_validate_cmd = '-N -configtest'
+    $validate_cmd = '-N -configtest'
   }
 
   case $::kernel {
@@ -31,7 +31,7 @@ class winlogbeat::config {
         ensure       => file,
         path         => $winlogbeat::config_file,
         content      => template($winlogbeat::real_conf_template),
-        validate_cmd => "\"${winlogbeat_path}\" ${real_validate_cmd} -c \"%\"",
+        validate_cmd => "\"${winlogbeat_path}\" ${validate_cmd} -c \"%\"",
         notify       => Service['winlogbeat'],
       }
     } # end Windows
