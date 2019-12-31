@@ -18,9 +18,9 @@ class winlogbeat::config {
   })
 
   if versioncmp($winlogbeat::real_version, '6') >= 0 {
-    $real_validate_cmd = "test config"
+    $real_validate_cmd = 'test config'
   } else {
-    $real_validate_cmd = "-N -configtest"
+    $real_validate_cmd = '-N -configtest'
   }
 
   case $::kernel {
