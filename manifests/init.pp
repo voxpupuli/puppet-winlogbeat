@@ -77,7 +77,7 @@ class winlogbeat (
     } else {
       $real_conf_template = "${module_name}/winlogbeat1.yml.erb"
     }
-  } elsif $real_version == '5' {
+  } elsif $real_version == '5' or $real_version == '6' or $real_version == '7' {
     if $use_generic_template {
       $real_conf_template = "${module_name}/winlogbeat1.yml.erb"
     } else {
