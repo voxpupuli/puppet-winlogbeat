@@ -87,8 +87,7 @@ class winlogbeat::install {
       }
 
       -> exec { "uninstall ${filename}":
-        cwd     => $install_folder,
-        command => './uninstall-service-winlogbeat.ps1',
+        command => "${install_folder}/uninstall-service-winlogbeat.ps1",
         onlyif  => 'if(Get-WmiObject -Class Win32_Service -Filter "Name=\'winlogbeat\'") {exit 0} else {exit 1}',
       }
 
