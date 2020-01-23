@@ -8,6 +8,6 @@ Facter.add('winlogbeat_version') do
     end
   end
   setcode do
-    winlogbeat_version.nil ? false : %r{^winlogbeat version ([^\s]+)?}.match(winlogbeat_version)[1]
+    winlogbeat_version.nil? ? false : %r{^winlogbeat version ([^\s]+)?}.match(winlogbeat_version)[1]
   end
 end
