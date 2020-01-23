@@ -15,7 +15,7 @@ winlogbeat::outputs: {}
 winlogbeat::logging: {}
 winlogbeat::run_options: {}
 winlogbeat::disable_config_test: false
-winlogbeat::package_ensure: '6.8.5'
+winlogbeat::package_ensure: '7.5.1'
 winlogbeat::event_logs: []
 winlogbeat::setup: {}
 winlogbeat::queue: {}
