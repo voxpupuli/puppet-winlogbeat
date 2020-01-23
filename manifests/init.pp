@@ -114,7 +114,7 @@ class winlogbeat (
   if $package_ensure == 'absent' {
     $ensure = 'absent'
     $alternate_ensure = 'absent'
-    $real_service_ensure = 'absent'
+    $real_service_ensure = 'stopped'
     $real_service_enable = false
     $file_ensure = 'absent'
     $directory_ensure = 'absent'
