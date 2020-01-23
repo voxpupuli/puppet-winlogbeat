@@ -131,10 +131,10 @@ class winlogbeat (
   contain ::winlogbeat::config
   contain ::winlogbeat::service
 
-  if $package_ensure == 'absent' {
-    Class['::winlogbeat::config']
+  if $ensure == 'absent' {
+    Class['::winlogbeat::service']
+    -> Class['::winlogbeat::config']
     -> Class['::winlogbeat::install']
-    -> Class['::winlogbeat::service']
   } else {
     Class['::winlogbeat::install']
     -> Class['::winlogbeat::config']
