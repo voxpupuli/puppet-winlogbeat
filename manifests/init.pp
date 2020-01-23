@@ -114,7 +114,8 @@ class winlogbeat (
   if $package_ensure == 'absent' {
     $ensure = 'absent'
     $alternate_ensure = 'absent'
-    $real_service_ensure = 'stopped'
+    $real_service_ensure = 'absent'
+    $real_service_enable = false
     $file_ensure = 'absent'
     $directory_ensure = 'absent'
   } else {
@@ -123,6 +124,7 @@ class winlogbeat (
     $file_ensure = 'file'
     $directory_ensure = 'directory'
     $real_service_ensure = $service_ensure
+    $real_service_enable = $service_enable
   }
 
   # If we're removing winlogbeat, do things in a different order to make sure
