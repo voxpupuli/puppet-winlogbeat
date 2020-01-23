@@ -112,11 +112,13 @@ class winlogbeat (
   }
 
   if $package_ensure == 'absent' {
+    $ensure = 'absent'
     $alternate_ensure = 'absent'
     $real_service_ensure = 'stopped'
     $file_ensure = 'absent'
     $directory_ensure = 'absent'
   } else {
+    $ensure = 'present'
     $alternate_ensure = 'present'
     $file_ensure = 'file'
     $directory_ensure = 'directory'

@@ -9,6 +9,7 @@ class winlogbeat::config {
   $cmd_install_dir = regsubst($winlogbeat::install_dir, '/', '\\', 'G')
   $winlogbeat_path = join([$cmd_install_dir, 'winlogbeat', 'winlogbeat.exe'], '\\')
 
+
   if versioncmp($major_version, '6') >= 0 {
     $winlogbeat_config_temp = delete_undef_values({
       'shutdown_timeout'  => $winlogbeat::shutdown_timeout,
