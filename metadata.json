@@ -1,6 +1,6 @@
 {
   "name": "puppet-winlogbeat",
-  "version": "0.2.3-rc0",
+  "version": "1.0.0",
   "author": "Vox Pupuli",
   "summary": "A module to install and manage the winlogbeat log shipper",
   "license": "Apache-2.0",
