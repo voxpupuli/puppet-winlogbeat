@@ -56,7 +56,6 @@ class winlogbeat (
   $event_logs_merge     = false,
   $proxy_address        = undef,
 ) inherits winlogbeat::params {
-
   validate_bool($event_logs_merge)
 
   if $major_version == undef and getvar('::winlogbeat_version') == undef {
@@ -103,7 +102,7 @@ class winlogbeat (
   validate_hash($outputs, $logging, $event_logs_final)
   validate_string($registry_file, $package_ensure)
 
-  if(!empty($proxy_address)){
+  if(!empty($proxy_address)) {
     validate_re($proxy_address, ['^(http(?:s)?\:\/\/[a-zA-Z0-9]+(?:(?:\.|\-)[a-zA-Z0-9]+)+(?:\:\d+)?(?:\/[\w\-]+)*(?:\/?|\/\w+\.[a-zA-Z]{2,4}(?:\?[\w]+\=[\w\-]+)?)?(?:\&[\w]+\=[\w\-]+)*)$'], 'ERROR: You must enter a proxy url in a valid format i.e. http://proxy.net:3128')
   }
   contain winlogbeat::install
