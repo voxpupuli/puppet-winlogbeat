@@ -11,6 +11,7 @@ class winlogbeat::config {
         'metrics'       => $winlogbeat::metrics,
         'event_logs'    => $winlogbeat::event_logs_final,
       },
+      'cloud'             => $winlogbeat::cloud,
       'output'            => $winlogbeat::outputs,
       'shipper'           => $winlogbeat::shipper,
       'logging'           => $winlogbeat::logging,

@@ -56,7 +56,31 @@ class { 'winlogbeat':
     },
   },
 }
+```
 
+To ship files to [elasticsearch cloud](https://www.elastic.co/guide/en/beats/winlogbeat/current/configure-cloud-id.html):
+```puppet
+class { 'winlogbeat':
+  # must be 6 or above to be recognized by winlogbeat
+  major_version  => '7',
+  package_ensure => '7.9.0',
+  cloud          => {
+    id   => 'YOUR_CLOUD_ID',
+    auth => 'elastic:YOUR_CLOUD_AUTH'
+  },
+  outputs        => {
+    'elasticsearch' => {
+     #overridden by cloud.id and cloud.auth
+     'hosts' => [
+       'http://localhost:9200',
+     ],
+     'index'       => 'winlogbeat',
+     'cas'         => [
+        '/etc/pki/root/ca.pem',
+     ],
+    },
+  },
+}
 ```
 
 To ship log files through [logstash](https://www.elastic.co/guide/en/beats/winlogbeat/current/logstash-output.html):
@@ -73,7 +97,6 @@ class { 'winlogbeat':
     },
   },
 }
-
 ```
 
 [Shipper](https://www.elastic.co/guide/en/beats/winlogbeat/current/configuration-shipper.html) and [logging](https://www.elastic.co/guide/en/beats/winlogbeat/current/configuration-logging.html) options can be configured the same way, and are documented on the [elastic website](https://www.elastic.co/guide/en/beats/winlogbeat/current/index.html).

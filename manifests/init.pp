@@ -16,6 +16,7 @@
 # @param service_ensure [String] The ensure parameter on the winlogbeat service (default: running)
 # @param service_enable [String] The enable parameter on the winlogbeat service (default: true)
 # @param registry_file [String] The registry file used to store positions, absolute or relative to working directory (default .winlogbeat.yml)
+# @param cloud [Hash] Will be converted to YAML to create the optional cloud section of the winlogbeat config
 # @param outputs [Hash] Will be converted to YAML for the required outputs section of the winlogbeat config
 # @param shipper [Hash] Will be converted to YAML to create the optional shipper section of the winlogbeat config
 # @param logging [Hash] Will be converted to YAML to create the optional logging section of the winlogbeat config
@@ -34,6 +35,7 @@ class winlogbeat (
   $service_provider     = $winlogbeat::params::service_provider,
   $registry_file        = $winlogbeat::params::registry_file,
   $config_file          = $winlogbeat::params::config_file,
+  $cloud                = $winlogbeat::params::cloud,
   $outputs              = $winlogbeat::params::outputs,
   $shipper              = $winlogbeat::params::shipper,
   $logging              = $winlogbeat::params::logging,

@@ -115,6 +115,17 @@ max_procs: <%= @winlogbeat_config['max_procs'] %>
 #- add_cloud_metadata:
 #
 
+#================================ Cloud ======================================
+<%- if @winlogbeat_config['cloud'] != nil -%>
+cloud:
+  <%- if @winlogbeat_config['cloud']['id'] != nil -%>
+  id: "<%= @winlogbeat_config['cloud']['id'] %>"
+  <%- end -%>
+  <%- if @winlogbeat_config['cloud']['auth'] != nil -%>
+  auth: "<%= @winlogbeat_config['cloud']['auth'] %>"
+  <%- end -%>
+<%- end -%>
+
 #================================ Outputs ======================================
 
 <%- if @winlogbeat_config['output']['elasticsearch'] != nil -%>
