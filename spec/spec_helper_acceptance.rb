@@ -27,7 +27,7 @@ end
 install_module_on(hosts)
 install_module_dependencies_on(hosts)
 
-UNSUPPORTED_PLATFORMS = ['aix', 'Solaris', 'BSD', 'linux'].freeze
+UNSUPPORTED_PLATFORMS = %w[aix Solaris BSD linux].freeze
 
 RSpec.configure do |c|
   module_root = File.expand_path(File.join(File.dirname(__FILE__), '..'))

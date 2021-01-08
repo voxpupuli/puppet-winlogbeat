@@ -89,17 +89,16 @@ class winlogbeat (
   Optional[Hash]                                       $xpack,
   String                                               $kernel_fail_message,
 ) {
-
-  include ::stdlib
+  include stdlib
 
   if ($::kernel != 'Windows') {
     fail($kernel_fail_message)
   }
 
-  $url_arch = $::architecture ? {
+  $url_arch = $facts['os']['architecture'] ? {
     'x86'   => 'x86',
     'x64'   => 'x86_64',
-    default => fail("${::architecture} is not supported by winloagbeat."),
+    default => fail("${facts['os']['architecture']} is not supported by winloagbeat."),
   }
 
   $real_download_url = $download_url ? {
@@ -129,17 +128,17 @@ class winlogbeat (
 
   # If we're removing winlogbeat, do things in a different order to make sure
   # we remove as much as possible
-  contain ::winlogbeat::install
-  contain ::winlogbeat::config
-  contain ::winlogbeat::service
+  contain winlogbeat::install
+  contain winlogbeat::config
+  contain winlogbeat::service
 
   if $ensure == 'absent' {
-    Class['::winlogbeat::service']
-    -> Class['::winlogbeat::config']
-    -> Class['::winlogbeat::install']
+    Class['winlogbeat::service']
+    -> Class['winlogbeat::config']
+    -> Class['winlogbeat::install']
   } else {
-    Class['::winlogbeat::install']
-    -> Class['::winlogbeat::config']
-    -> Class['::winlogbeat::service']
+    Class['winlogbeat::install']
+    -> Class['winlogbeat::config']
+    -> Class['winlogbeat::service']
   }
 }
