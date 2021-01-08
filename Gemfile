@@ -30,9 +30,4 @@ gem 'facter', ENV['FACTER_GEM_VERSION'], :require => false, :groups => [:test]
 puppetversion = ENV['PUPPET_VERSION'] || '~> 6.0'
 gem 'puppet', puppetversion, :require => false, :groups => [:test]
 
-extra_gemfiles.each do |gemfile|
-  if File.file?(gemfile) && File.readable?(gemfile)
-    eval(File.read(gemfile), binding)
-  end
-end
 # vim: syntax=ruby
