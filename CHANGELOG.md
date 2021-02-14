@@ -4,7 +4,16 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
-## [v1.0.0](https://github.com/voxpupuli/puppet-winlogbeat/tree/v1.0.0) (2020-01-15)
+## [v1.0.1](https://github.com/voxpupuli/puppet-winlogbeat/tree/v1.0.1) (2021-02-14)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-winlogbeat/compare/v1.0.0...v1.0.1)
+
+**Merged pull requests:**
+
+- Bump puppetlabs-powershell to < 5.0.0 [\#46](https://github.com/voxpupuli/puppet-winlogbeat/pull/46) ([cdenneen](https://github.com/cdenneen))
+- modulesync 3.0.0 & puppet-lint updates [\#41](https://github.com/voxpupuli/puppet-winlogbeat/pull/41) ([bastelfreak](https://github.com/bastelfreak))
+
+## [v1.0.0](https://github.com/voxpupuli/puppet-winlogbeat/tree/v1.0.0) (2020-01-30)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-winlogbeat/compare/v0.2.2...v1.0.0)
 
