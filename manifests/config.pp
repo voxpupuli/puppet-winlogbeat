@@ -24,7 +24,7 @@ class winlogbeat::config {
     $validate_cmd = '-N -configtest'
   }
 
-  case $::kernel {
+  case $facts['kernel'] {
     'Windows' : {
       $cmd_install_dir = regsubst($winlogbeat::install_dir, '/', '\\', 'G')
       $winlogbeat_path = join([$cmd_install_dir, 'Winlogbeat', 'winlogbeat.exe'], '\\')
