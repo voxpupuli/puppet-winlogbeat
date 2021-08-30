@@ -58,11 +58,11 @@ class winlogbeat (
 ) inherits winlogbeat::params {
   validate_bool($event_logs_merge)
 
-  if $major_version == undef and getvar('::winlogbeat_version') == undef {
+  if $major_version == undef and getvar('winlogbeat_version') == undef {
     $real_version = '5'
-  } elsif $major_version == undef and versioncmp($::winlogbeat_version, '5.0.0') >= 0 {
+  } elsif $major_version == undef and versioncmp($facts['winlogbeat_version'], '5.0.0') >= 0 {
     $real_version = '5'
-  } elsif $major_version == undef and versioncmp($::winlogbeat_version, '5.0.0') < 0 {
+  } elsif $major_version == undef and versioncmp($facts['winlogbeat_version'], '5.0.0') < 0 {
     $real_version = '1'
   } else {
     $real_version = $major_version
