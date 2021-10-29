@@ -23,9 +23,9 @@ class winlogbeat::config {
   } else {
     $validate_cmd = '-N -configtest'
   }
-if (versioncmp($winlogbeat::real_version, '7') < 0) {
+  if (versioncmp($winlogbeat::real_version, '7') < 0) {
     $winlogbeat_config['winlogbeat']['event_logs'].each | $k,$v | {
-      if has_key($v,'processors')  {
+      if has_key($v,'processors') {
         fail("winlogbeat versions < 7 do not support processors key within an event_log entry\n 'processors' key present in ${k}")
       }
     }

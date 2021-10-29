@@ -32,17 +32,17 @@ class winlogbeat::install {
   }
   # use Expand-Archive cmdlet if available (pwsh >= 5), as server core installations
   # run into issues using the original method
-if $facts['psversiontable']['psversion']['major'] >= 5 {
-      exec {"unzip ${filename}":
-        command => "Expand-Archive -Path '${zip_file}' -DestinationPath '${winlogbeat::install_dir}' -Force",
-        creates => $version_file,
-        require => [
-          File[$winlogbeat::install_dir],
-          Archive[$zip_file],
-        ],
-      }
-    } else {
-      exec { "unzip ${filename}":
+  if $facts['psversiontable']['psversion']['major'] >= 5 {
+    exec { "unzip ${filename}":
+      command => "Expand-Archive -Path '${zip_file}' -DestinationPath '${winlogbeat::install_dir}' -Force",
+      creates => $version_file,
+      require => [
+        File[$winlogbeat::install_dir],
+        Archive[$zip_file],
+      ],
+    }
+  } else {
+    exec { "unzip ${filename}":
       command => "\$sh=New-Object -COM Shell.Application;\$sh.namespace((Convert-Path '${winlogbeat::install_dir}')).Copyhere(\$sh.namespace((Convert-Path '${zip_file}')).items(), 16)",
       creates => $version_file,
       require => [
