@@ -32,7 +32,7 @@ class winlogbeat::install {
   }
   # use Expand-Archive cmdlet if available (pwsh >= 5), as server core installations
   # run into issues using the original method
-  if $facts['psversiontable']['psversion']['major'] >= 5 {
+  if versioncmp(fact('psversion'), '5') >= 0 {
     exec { "unzip ${filename}":
       command => "Expand-Archive -Path '${zip_file}' -DestinationPath '${winlogbeat::install_dir}' -Force",
       creates => $version_file,

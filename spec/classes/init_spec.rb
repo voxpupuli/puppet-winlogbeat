@@ -1,12 +1,20 @@
 require 'spec_helper'
+
 describe 'winlogbeat' do
   on_supported_os.each do |os, facts|
     context "on #{os} " do
-      let :facts do
-        facts
-      end
+      context 'powershell version >=5' do
+        let(:facts) do
+          facts.merge({ 'psversion' => '5.1.2' })
+        end
 
-      context 'with default values for all parameters' do
+        it { is_expected.to contain_class('winlogbeat') }
+      end
+      context 'powershell version < 5' do
+        let(:facts) do
+          facts.merge({ 'psversion' => '3.1.0' })
+        end
+
         it { is_expected.to contain_class('winlogbeat') }
       end
     end
