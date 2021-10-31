@@ -1,0 +1,20 @@
+# frozen_string_literal: true
+
+require 'json'
+
+# Stolen from https://souldodotnet.wordpress.com/2015/11/05/windows-powershell-and-puppet-structured-facts/
+Facter.add(:psversion) do
+  confine :osfamily => :windows # rubocop:disable Style/HashSyntax
+  setcode do
+    powershell = if Facter::Core::Execution.which('powershell')
+                   Facter::Core::Execution.which('powershell')
+                 elsif File.exist?("#{ENV['SYSTEMROOT']}\\sysnative\\WindowsPowershell\\v1.0\\powershell.exe")
+                   "#{ENV['SYSTEMROOT']}\\sysnative\\WindowsPowershell\\v1.0\\powershell.exe"
+                 elsif File.exist?("#{ENV['SYSTEMROOT']}\\system32\\WindowsPowershell\\v1.0\\powershell.exe")
+                   "#{ENV['SYSTEMROOT']}\\system32\\WindowsPowershell\\v1.0\\powershell.exe"
+                 end
+    query = 'Write-Host $PSVersionTable.PSVersion.ToString()'
+    response = Facter::Core::Execution.execute(%(#{powershell} -command "#{query}"))
+    response if %r{^\d+\.\d+\.\d+$} =~ response
+  end
+end

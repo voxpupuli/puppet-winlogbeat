@@ -30,16 +30,27 @@ class winlogbeat::install {
     creates      => $version_file,
     proxy_server => $winlogbeat::proxy_address,
   }
-
-  exec { "unzip ${filename}":
-    command => "\$sh=New-Object -COM Shell.Application;\$sh.namespace((Convert-Path '${winlogbeat::install_dir}')).Copyhere(\$sh.namespace((Convert-Path '${zip_file}')).items(), 16)",
-    creates => $version_file,
-    require => [
-      File[$winlogbeat::install_dir],
-      Archive[$zip_file],
-    ],
+  # use Expand-Archive cmdlet if available (pwsh >= 5), as server core installations
+  # run into issues using the original method
+  if versioncmp(fact('psversion'), '5') >= 0 {
+    exec { "unzip ${filename}":
+      command => "Expand-Archive -Path '${zip_file}' -DestinationPath '${winlogbeat::install_dir}' -Force",
+      creates => $version_file,
+      require => [
+        File[$winlogbeat::install_dir],
+        Archive[$zip_file],
+      ],
+    }
+  } else {
+    exec { "unzip ${filename}":
+      command => "\$sh=New-Object -COM Shell.Application;\$sh.namespace((Convert-Path '${winlogbeat::install_dir}')).Copyhere(\$sh.namespace((Convert-Path '${zip_file}')).items(), 16)",
+      creates => $version_file,
+      require => [
+        File[$winlogbeat::install_dir],
+        Archive[$zip_file],
+      ],
+    }
   }
-
   # Clean up after ourselves
   file { $zip_file:
     ensure  => absent,

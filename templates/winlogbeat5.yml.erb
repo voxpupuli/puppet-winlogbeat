@@ -47,6 +47,10 @@ winlogbeat.event_logs:
     <%- if options['fields_under_root'] != nil -%>
     fields_under_root: <%= options['fields_under_root'] %>
     <%- end -%>
+    <%- if options['processors'] != nil -%>
+    processors:
+      <%- %><%= options['processors'].to_yaml.lines.drop(1).join.gsub(/^/, '    ') -%>
+    <%- end -%>
   <%- end -%>
 <%- end -%>
 
