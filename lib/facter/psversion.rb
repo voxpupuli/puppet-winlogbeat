@@ -15,6 +15,6 @@ Facter.add(:psversion) do
                  end
     query = 'Write-Host $PSVersionTable.PSVersion.ToString()'
     response = Facter::Core::Execution.execute(%(#{powershell} -command "#{query}"))
-    response if %r{^\d+\.\d+\.\d+$} =~ response
+    response if %r{^\d+(\.\d+)+$} =~ response
   end
 end

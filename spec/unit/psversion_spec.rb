@@ -31,6 +31,14 @@ describe Facter::Util::Fact do
             expect(Facter.fact(:psversion).value).to eq('7.1.2')
           end
         end
+        context 'Succeed with less standard x.x.x.x.x format' do
+          before do
+            allow(Facter::Core::Execution).to receive(:execute).with(%(#{powershell} -command "#{query}")).and_return('7.1222.244.4222.111')
+          end
+          it do
+            expect(Facter.fact(:psversion).value).to eq('7.1222.244.4222.111')
+          end
+        end
         context 'failures' do
           context 'nil on error text return' do
             before do
