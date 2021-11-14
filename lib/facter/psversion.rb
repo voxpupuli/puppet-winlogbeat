@@ -6,8 +6,8 @@ require 'json'
 Facter.add(:psversion) do
   confine :osfamily => :windows # rubocop:disable Style/HashSyntax
   setcode do
-    powershell = if Facter::Core::Execution.which('powershell')
-                   Facter::Core::Execution.which('powershell')
+    powershell = if Facter::Core::Execution.which('powershell.exe')
+                   Facter::Core::Execution.which('powershell.exe')
                  elsif File.exist?("#{ENV['SYSTEMROOT']}\\sysnative\\WindowsPowershell\\v1.0\\powershell.exe")
                    "#{ENV['SYSTEMROOT']}\\sysnative\\WindowsPowershell\\v1.0\\powershell.exe"
                  elsif File.exist?("#{ENV['SYSTEMROOT']}\\system32\\WindowsPowershell\\v1.0\\powershell.exe")
