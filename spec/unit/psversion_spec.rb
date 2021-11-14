@@ -15,7 +15,7 @@ describe Facter::Util::Fact do
       query = 'Write-Host $PSVersionTable.PSVersion.ToString()'
       context "on os: #{os}" do
         before do
-          allow(Facter::Core::Execution).to receive(:which).with('powershell').and_return('C:\\powershell.exe')
+          allow(Facter::Core::Execution).to receive(:which).with('powershell.exe').and_return('C:\\powershell.exe')
           allow(File).to receive(:exist).with("#{ENV['SYSTEMROOT']}\\sysnative\\WindowsPowershell\\v1.0\\powershell.exe").and_return(false)
           allow(File).to receive(:exist).with("#{ENV['SYSTEMROOT']}\\system32\\WindowsPowershell\\v1.0\\powershell.exe").and_return(false)
         end
