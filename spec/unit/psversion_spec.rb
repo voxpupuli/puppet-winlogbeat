@@ -15,7 +15,7 @@ describe Facter::Util::Fact do
       query = 'Write-Host $PSVersionTable.PSVersion.ToString()'
       context "on os: #{os}" do
         before do
-          allow(Facter::Core::Execution).to receive(:which).with('powershell').and_return('C:\\powershell.exe')
+          allow(Facter::Core::Execution).to receive(:which).with('powershell.exe').and_return('C:\\powershell.exe')
           allow(File).to receive(:exist).with("#{ENV['SYSTEMROOT']}\\sysnative\\WindowsPowershell\\v1.0\\powershell.exe").and_return(false)
           allow(File).to receive(:exist).with("#{ENV['SYSTEMROOT']}\\system32\\WindowsPowershell\\v1.0\\powershell.exe").and_return(false)
         end
@@ -29,6 +29,14 @@ describe Facter::Util::Fact do
           end
           it do
             expect(Facter.fact(:psversion).value).to eq('7.1.2')
+          end
+        end
+        context 'Succeed with less standard x.x.x.x.x format' do
+          before do
+            allow(Facter::Core::Execution).to receive(:execute).with(%(#{powershell} -command "#{query}")).and_return('7.1222.244.4222.111')
+          end
+          it do
+            expect(Facter.fact(:psversion).value).to eq('7.1222.244.4222.111')
           end
         end
         context 'failures' do
