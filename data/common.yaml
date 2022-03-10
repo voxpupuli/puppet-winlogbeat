@@ -19,7 +19,7 @@ winlogbeat::package_ensure: "7.16.3"
 winlogbeat::event_logs: []
 winlogbeat::setup: {}
 winlogbeat::queue: {}
-winlogbeat::processors: {}
+winlogbeat::processors: []
 winlogbeat::registry_flush: null
 winlogbeat::manage_download_file: true
 winlogbeat::download_url: null
