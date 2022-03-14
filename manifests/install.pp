@@ -56,7 +56,7 @@ class winlogbeat::install {
       }
 
       exec { "rename ${filename}":
-        command => "Start-Sleep -Seconds 10;Remove-Item '${install_folder}' -Recurse -Force -ErrorAction Stop; Rename-Item '${winlogbeat::install_dir}/${filename}' '${install_folder}'", # lint:ignore:140chars
+        command => "Start-Sleep -Seconds 10;Remove-Item '${install_folder}' -Recurse -Force -ErrorAction Ignore; Rename-Item '${winlogbeat::install_dir}/${filename}' '${install_folder}'", # lint:ignore:140chars
         creates => $version_file,
         require => Exec["stop service ${filename}"],
       }
