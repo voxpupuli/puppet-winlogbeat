@@ -1,5 +1,5 @@
 class winlogbeat::config {
-  $winlogbeat_config = delete_undef_values( {
+  $winlogbeat_config = delete_undef_values({
       'beat_name'         => $winlogbeat::beat_name,
       'tags'              => $winlogbeat::tags,
       'queue_size'        => $winlogbeat::queue_size,
