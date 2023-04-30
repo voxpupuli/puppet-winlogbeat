@@ -7,6 +7,7 @@ class winlogbeat::params {
   $max_procs            = undef
   $fields               = {}
   $fields_under_root    = false
+  $cloud                = {}
   $outputs              = {}
   $shipper              = {}
   $logging              = {}
