@@ -99,11 +99,11 @@ class winlogbeat (
     warning('You\'ve specified a non-standard config_file location - winlogbeat may fail to start unless you\'re doing something to fix this')
   }
 
-  validate_hash($outputs, $logging, $event_logs_final)
-  validate_string($registry_file, $package_ensure)
+  validate_legacy(Hash, 'validate_hash', $outputs, $logging, $event_logs_final)
+  validate_legacy(String, 'validate_string', $registry_file, $package_ensure)
 
   if(!empty($proxy_address)) {
-    validate_re($proxy_address, ['^(http(?:s)?\:\/\/[a-zA-Z0-9]+(?:(?:\.|\-)[a-zA-Z0-9]+)+(?:\:\d+)?(?:\/[\w\-]+)*(?:\/?|\/\w+\.[a-zA-Z]{2,4}(?:\?[\w]+\=[\w\-]+)?)?(?:\&[\w]+\=[\w\-]+)*)$'], 'ERROR: You must enter a proxy url in a valid format i.e. http://proxy.net:3128')
+    validate_legacy(String, 'validate_re', $proxy_address, ['^(http(?:s)?\:\/\/[a-zA-Z0-9]+(?:(?:\.|\-)[a-zA-Z0-9]+)+(?:\:\d+)?(?:\/[\w\-]+)*(?:\/?|\/\w+\.[a-zA-Z]{2,4}(?:\?[\w]+\=[\w\-]+)?)?(?:\&[\w]+\=[\w\-]+)*)$'], 'ERROR: You must enter a proxy url in a valid format i.e. http://proxy.net:3128')
   }
   contain winlogbeat::install
   contain winlogbeat::config
