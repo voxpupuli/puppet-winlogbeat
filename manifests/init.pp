@@ -56,7 +56,7 @@ class winlogbeat (
   $event_logs_merge     = false,
   $proxy_address        = undef,
 ) inherits winlogbeat::params {
-  validate_bool($event_logs_merge)
+  validate_legacy(Boolean, 'validate_bool', $event_logs_merge)
 
   if $major_version == undef and getvar('winlogbeat_version') == undef {
     $real_version = '5'
