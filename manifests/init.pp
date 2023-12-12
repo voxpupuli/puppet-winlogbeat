@@ -56,7 +56,6 @@ class winlogbeat (
   Boolean                   $event_logs_merge     = false,
   Optional[Stdlib::HTTPUrl] $proxy_address        = undef,
 ) inherits winlogbeat::params {
-
   if $major_version == undef and getvar('winlogbeat_version') == undef {
     $real_version = '5'
   } elsif $major_version == undef and versioncmp($facts['winlogbeat_version'], '5.0.0') >= 0 {
