@@ -46,7 +46,7 @@ class winlogbeat (
   Boolean                   $use_generic_template = $winlogbeat::params::use_generic_template,
   Stdlib::Fqdn              $beat_name            = $winlogbeat::params::beat_name,
   Array                     $tags                 = $winlogbeat::params::tags,
-  Integer[1]                $queue_size           = $winlogbeat::params::queue_size,
+  Integer                   $queue_size           = $winlogbeat::params::queue_size,
   Optional[Integer]         $max_procs            = $winlogbeat::params::max_procs,
   Hash                      $fields               = $winlogbeat::params::fields,
   Boolean                   $fields_under_root    = $winlogbeat::params::fields_under_root,
