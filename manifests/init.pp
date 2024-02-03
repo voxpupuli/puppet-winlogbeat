@@ -1,5 +1,5 @@
-# This class installs the Elastic winlogbeat log shipper and
-# helps manage which logs are shipped
+# @summary
+# This class installs the Elastic winlogbeat log shipper and helps manage which logs are shipped
 #
 # @example
 # class { 'winlogbeat':
@@ -27,37 +27,35 @@
 # @param event_logs_merge [Boolean] Whether $event_logs should merge all hiera sources, or use simple automatic parameter lookup
 
 class winlogbeat (
-  $major_version        = undef,
-  $package_ensure       = $winlogbeat::params::package_ensure,
-  $service_ensure       = $winlogbeat::params::service_ensure,
-  $service_enable       = $winlogbeat::params::service_enable,
-  $service_provider     = $winlogbeat::params::service_provider,
-  $registry_file        = $winlogbeat::params::registry_file,
-  $config_file          = $winlogbeat::params::config_file,
-  $outputs              = $winlogbeat::params::outputs,
-  $shipper              = $winlogbeat::params::shipper,
-  $logging              = $winlogbeat::params::logging,
-  $run_options          = $winlogbeat::params::run_options,
-  $conf_template        = undef,
-  $download_url         = undef,
-  $install_dir          = $winlogbeat::params::install_dir,
-  $tmp_dir              = $winlogbeat::params::tmp_dir,
+  Optional[String[1]]                         $major_version        = undef,
+  Stdlib::Ensure::Package                     $package_ensure       = $winlogbeat::params::package_ensure,
+  Stdlib::Ensure::Service                     $service_ensure       = $winlogbeat::params::service_ensure,
+  Variant[Boolean, Enum['stopped','running']] $service_enable       = $winlogbeat::params::service_enable,
+  Optional[String[1]]                         $service_provider     = $winlogbeat::params::service_provider,
+  Stdlib::Windowspath                         $registry_file        = $winlogbeat::params::registry_file,
+  Stdlib::Windowspath                         $config_file          = $winlogbeat::params::config_file,
+  Hash                                        $outputs              = $winlogbeat::params::outputs,
+  Hash                                        $shipper              = $winlogbeat::params::shipper,
+  Hash                                        $logging              = $winlogbeat::params::logging,
+  Hash                                        $run_options          = $winlogbeat::params::run_options,
+  Optional[String[1]]                         $conf_template        = undef,
+  Optional[Stdlib::HttpUrl]                   $download_url         = undef,
+  Stdlib::Windowspath                         $install_dir          = $winlogbeat::params::install_dir,
+  Stdlib::Windowspath                         $tmp_dir              = $winlogbeat::params::tmp_dir,
   #### v5 only ####
-  $use_generic_template = $winlogbeat::params::use_generic_template,
-  $beat_name            = $winlogbeat::params::beat_name,
-  $tags                 = $winlogbeat::params::tags,
-  $queue_size           = $winlogbeat::params::queue_size,
-  $max_procs            = $winlogbeat::params::max_procs,
-  $fields               = $winlogbeat::params::fields,
-  $fields_under_root    = $winlogbeat::params::fields_under_root,
-  $metrics              = undef,
+  Boolean                                     $use_generic_template = $winlogbeat::params::use_generic_template,
+  String[1]                                   $beat_name            = $winlogbeat::params::beat_name,
+  Array[String[1]]                            $tags                 = $winlogbeat::params::tags,
+  Integer[1]                                  $queue_size           = $winlogbeat::params::queue_size,
+  Optional[Integer[1]]                        $max_procs            = $winlogbeat::params::max_procs,
+  Hash                                        $fields               = $winlogbeat::params::fields,
+  Boolean                                     $fields_under_root    = $winlogbeat::params::fields_under_root,
+  Optional[Hash]                              $metrics              = undef,
   #### End v5 only ####
-  $event_logs           = {},
-  $event_logs_merge     = false,
-  $proxy_address        = undef,
+  Hash                                        $event_logs           = {},
+  Boolean                                     $event_logs_merge     = false,
+  Optional[Stdlib::HTTPUrl]                   $proxy_address        = undef,
 ) inherits winlogbeat::params {
-  validate_bool($event_logs_merge)
-
   if $major_version == undef and getvar('winlogbeat_version') == undef {
     $real_version = '5'
   } elsif $major_version == undef and versioncmp($facts['winlogbeat_version'], '5.0.0') >= 0 {
@@ -99,12 +97,6 @@ class winlogbeat (
     warning('You\'ve specified a non-standard config_file location - winlogbeat may fail to start unless you\'re doing something to fix this')
   }
 
-  validate_hash($outputs, $logging, $event_logs_final)
-  validate_string($registry_file, $package_ensure)
-
-  if(!empty($proxy_address)) {
-    validate_re($proxy_address, ['^(http(?:s)?\:\/\/[a-zA-Z0-9]+(?:(?:\.|\-)[a-zA-Z0-9]+)+(?:\:\d+)?(?:\/[\w\-]+)*(?:\/?|\/\w+\.[a-zA-Z]{2,4}(?:\?[\w]+\=[\w\-]+)?)?(?:\&[\w]+\=[\w\-]+)*)$'], 'ERROR: You must enter a proxy url in a valid format i.e. http://proxy.net:3128')
-  }
   contain winlogbeat::install
   contain winlogbeat::config
   contain winlogbeat::service
