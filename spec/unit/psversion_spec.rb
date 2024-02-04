@@ -20,8 +20,8 @@ describe Facter::Util::Fact do
       context "on os: #{os}" do
         before do
           allow(Facter::Core::Execution).to receive(:which).with('powershell.exe').and_return('C:\\powershell.exe')
-          allow(File).to receive(:exist).with("#{ENV['SYSTEMROOT']}\\sysnative\\WindowsPowershell\\v1.0\\powershell.exe").and_return(false)
-          allow(File).to receive(:exist).with("#{ENV['SYSTEMROOT']}\\system32\\WindowsPowershell\\v1.0\\powershell.exe").and_return(false)
+          allow(File).to receive(:exist).with("#{ENV.fetch('SYSTEMROOT', nil)}\\sysnative\\WindowsPowershell\\v1.0\\powershell.exe").and_return(false)
+          allow(File).to receive(:exist).with("#{ENV.fetch('SYSTEMROOT', nil)}\\system32\\WindowsPowershell\\v1.0\\powershell.exe").and_return(false)
         end
 
         it do
