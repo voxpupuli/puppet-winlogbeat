@@ -12,7 +12,7 @@ describe Facter::Util::Fact do
     on_supported_os.each do |os, facts|
       before do
         Facter.clear
-        allow(Facter.fact(:osfamily)).to receive(:value).and_return(facts[:osfamily])
+        allow(Facter.fact(:osfamily)).to receive(:value).and_return(facts[:os]['family'])
       end
 
       powershell = 'C:\\powershell.exe'
