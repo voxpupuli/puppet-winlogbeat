@@ -4,7 +4,7 @@ class winlogbeat::install {
   # that in the future as it would greatly simplify this code and basically reduce it to
   # one package resource with type => chocolatey....
 
-  $filename = regsubst($winlogbeat::real_download_url, '^https.*\/([^\/]+)\.[^.].*', '\1')
+  $filename = regsubst($winlogbeat::real_download_url, '^https?.*\/([^\/]+)\.[^.].*', '\1')
   $foldername = 'Winlogbeat'
   $zip_file = join([$winlogbeat::tmp_dir, "${filename}.zip"], '/')
   $install_folder = join([$winlogbeat::install_dir, $foldername], '/')
